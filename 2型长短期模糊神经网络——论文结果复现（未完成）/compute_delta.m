@@ -1,0 +1,4 @@
+function [ y ] = compute_delta( x )
+y=1/(1+exp(-x));
+end
+

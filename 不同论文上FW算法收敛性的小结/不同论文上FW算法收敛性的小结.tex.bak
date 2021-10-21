@@ -1,0 +1,124 @@
+\documentclass[11pt,CJK]{cctart}
+\usepackage{caption}%调用标题宏包来修改标题的格式，居中对齐ll
+\usepackage[paperwidth=8.8in,paperheight=11in,left=1in, right=1in, top=1in, bottom=1in]{geometry}% 版面设计
+\usepackage{cite}
+\usepackage{latexsym}
+\usepackage[dvips]{graphicx}
+\usepackage[cmex10,tbtags]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm,multicol,amscd}
+\usepackage{amsfonts}
+\usepackage{mathbbold}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+%\usepackage[backref]{hyperref}
+%\documentclass[UTF8]{ctexart}
+\usepackage{multirow}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}
+\newtheorem{definition}{定义}
+%\newtheorem{proof}{证明}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}[section]
+
+%\documentclass{article}
+\renewcommand {\baselinestretch} {1.2}
+\renewcommand {\arraystretch} {1.2}
+
+
+\begin{document}
+
+\title{\textbf{不同论文上Frank-Wolfe算法所得结果的小结}}
+\date{2020.9.5}
+\maketitle
+
+
+\begin{table}[H]
+\centering
+\small
+\caption{\textbf{不同假设下,Frank-Wolfe算法收敛速度的比较}}
+\resizebox{\textwidth}{30mm}{
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{1}{|c|}{参考文献} & 可行域的条件 &目标函数的条件&收敛速度\\
+\hline
+\multicolumn{1}{|c|}{Jaggi,Martin,2013,\cite{JaggiMartin}} & 凸 &凸&$\frac{1}{t}$\\
+\hline
+\multicolumn{1}{|c|}{Dan Garber,Elad Hazan,2015,\cite{DanGarber}} & 强凸&强凸&$\frac{1}{t^2}$\\
+\hline
+\multicolumn{1}{|c|}{GuéLat,Jacques,Marcotte,1986,\cite{GueLat}} & 多面体 & 强凸&${\rm exp}(-\Theta(t))$\\
+\hline
+\multicolumn{1}{|c|}{Beck,Amir,Teboulle,2004,\cite{BeckAmir}} & 凸 & $f(x)=\|Ax-b\|_2^2$& ${\rm exp}(-\Theta(t))$\\
+\hline
+\multicolumn{1}{|c|}{Dunn,Joseph C,1979,\cite{DunnJoseph}} & 强凸 &$\|\nabla f(x)\|\geq c>0 ,\forall x \in \mathop{K}$& ${\rm exp}(-\Theta(t))$\\
+\hline
+\multicolumn{1}{|c|}{ \multirow{3}{*}{Jarrid Rector-Brooks,Jun-Kun Wang,Barzan Mozafari,2019,\cite{JarridRector}}}& \multicolumn{1}{c|}{光滑,凸} & \multicolumn{1}{c|}{强凸} & \multicolumn{1}{c|}{较大的可能性为$\frac{1}{t^2}$}\\
+\cline{2-4}
+\multicolumn{1}{|c|}{} & 局部Lipschitz,梯度的范数有下界 &严格局部拟凸&${\rm max}(\frac{2\kappa}{\theta \varepsilon^2},\frac{8 L \kappa}{\theta \varepsilon^3})$\\
+\cline{2-4}
+\multicolumn{1}{|c|}{} & 强凸 &非凸,光滑 &较大的可能性为$\frac{1}{t}$\\
+\hline
+
+\multicolumn{1}{|c|}{Lacoste-Julien,2016,\cite{LacosteJulien}} & 凸 &非凸&$\frac{1}{\sqrt{t}}$\\
+\hline
+%\multicolumn{1}{|c|}{参考文献} & 可行域 &目标函数&收敛速度\\
+%\hline
+%\multicolumn{1}{|c|}{参考文献} & 可行域 &目标函数&收敛速度\\
+%\hline
+%\multicolumn{1}{|c|}{参考文献} & 可行域 &目标函数&收敛速度\\
+%\hline
+\end{tabular}}
+\end{table}
+
+
+
+
+
+
+
+
+
+{\footnotesize
+\renewcommand{\baselinestretch}{1} %修改行距
+\begin{thebibliography}{1}
+\bibitem{JaggiMartin}
+Jaggi, Martin.  Revisiting frank-wolfe: Projection-free
+sparse convex optimization. In Proceedings of the 30th
+International Conference on Machine Learning,ICML,2013.
+
+\bibitem{DanGarber}
+Dan Garber,Elad Hazan,Faster Rates for the Frank-Wolfe Method over Strongly-Convex Sets,Proceedings of the 32ndInternational Conference on Machine Learning, Lille, France, 2015. JMLR: W\&CP volume 37.
+
+\bibitem{GueLat}
+GuéLat, Jacques and Marcotte, Patrice. Some comments
+on Wolfe's away step. Mathematical Programming, 35\(1\), 1986.
+
+\bibitem{BeckAmir}
+Beck, Amir and Teboulle, Marc. A conditional gradient
+method with linear rate of convergence for solving con-
+vex linear systems. Math. Meth. of OR, 59\(2\):235–247,
+2004.
+
+\bibitem{DunnJoseph}
+Dunn, Joseph C. Rates of Convergence for Conditional
+Gradient Algorithms Near Singular and Nonsingular Ex-
+tremals. SIAM Journal on Control and Optimization, 17
+(2), 1979.
+
+\bibitem{JarridRector}
+Jarrid Rector-Brooks,Jun-Kun Wang,Barzan Mozafari,Revisiting Projection-Free Optimization for Strongly Convex Constraint Sets.
+
+\bibitem{LacosteJulien}
+Lacoste-Julien, S. 2016. Convergence rate of frank-wolfe for
+non-convex objectives,arXiv:1607.00345.
+\end{thebibliography}
+
+\end{document}

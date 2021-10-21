@@ -1,0 +1,422 @@
+\documentclass[11pt,CJK]{cctart}
+\usepackage{caption}%调用标题宏包来修改标题的格式，居中对齐ll
+\usepackage[paperwidth=8.8in,paperheight=11in,left=1in, right=1in, top=1in, bottom=1in]{geometry}% 版面设计
+\usepackage{cite}
+\usepackage{latexsym}
+\usepackage[dvips]{graphicx}
+\usepackage[cmex10,tbtags]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm,multicol,amscd}
+\usepackage{amsfonts}
+\usepackage{mathbbold}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}
+\newtheorem{definition}{定义}
+%\newtheorem{proof}{Proof}[section]
+
+%\documentclass{article}
+\renewcommand {\baselinestretch} {1.2}
+\renewcommand {\arraystretch} {1.2}
+%\pagestyle{empty}
+\begin{document}
+
+\title{\textbf{Frank-Wolfe算法在目标函数为非凸，凸以及强凸情形下收敛性总结}}
+
+%\author{\large\bf 王佳文}
+
+\date{2020.8.15}
+\maketitle
+
+
+\section{Frank-Wolfe算法简介\cite{Fabian}}
+
+Frank-Wolfe(FW)算法是众多非线性约束中的方法之一，近年来由于内存要求较小和无投影迭代的特点得到了广泛的应用。它可以解决如下的问题：
+\begin{Large}
+\begin{equation}
+\mathop{\rm minimize}_{\textbf{\emph{x}} \in \mathcal{D}}{f{(\textbf{\emph{x}}})}
+\end{equation}
+\end{Large}
+其中$f$可微并且是$\rm L-Lipschitz$的，定义域$\mathcal{D}$是凸紧集。
+
+FW算法首先设置一个初始点$\textbf{\emph{x}}_{0}$，并由此构造了一个迭代序列$\textbf{\emph{x}}_{1},\textbf{\emph{x}}_{2},...$，这个序列可以收敛到问题的最优解。FW 算法的过程如下：
+\floatname{algorithm}{算法}
+%\renewcommand{\algorithmicrequire}{\textbf{输入:}}
+%\renewcommand{\algorithmicensure}{\textbf{输出:}}
+\begin{algorithm}[!h]
+	\caption{$\rm FW\,Algorithm$}%算法标题
+	\begin{algorithmic}[1]%一行一个标行号
+        \STATE $\textbf{Input}$:initial guess $\textbf{\emph{x}}_{0}$,tolerance $ \delta >0$
+        \FOR{$t=0,1,...$}
+        \STATE $\textbf{\emph{s}}_{t} \in \mathop{\rm argmax}\limits_{\textbf{s} \in \mathcal{D}}{\left \langle -\nabla f(\textbf{\emph{x}}_{t}),\textbf{\emph{s}} \right \rangle}$
+        \STATE $\textbf{\emph{d}}_{t}=\textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t}$
+        \STATE $g_{t}=\left \langle -\nabla f(\textbf{\emph{x}}_{t}),\textbf{\emph{d}}_{t} \right \rangle$
+        \IF{$g_{t} < \delta$}
+		\STATE Return $\textbf{\emph{x}}_{t}$
+		\ENDIF
+        \STATE $\textbf{Variant 1}$:设置步长 $\, \gamma_{t}=\rm min\Big\{\frac{g_{t}}{L\left \| \textbf{\emph{d}}_{t} \right \|^2 },1\Big\}$
+        \STATE $\textbf{Variant 2}$:通过线搜索设置步长 $\, \gamma_{t}=\mathop{\rm argmin}\limits_{\gamma \in [0,1]}f(\textbf{\emph{x}}_{t}+\gamma \textbf{\emph{d}}_{t} )$
+        \STATE $\textbf{\emph{x}}_{t+1}=\textbf{\emph{x}}_{t}+\gamma_{t}\textbf{\emph{d}}_{t}$
+		\ENDFOR
+        \STATE \textbf{Return} $\textbf{\emph{x}}_{t+1}$
+	\end{algorithmic}
+\end{algorithm}
+
+与其他约束优化算法(如投影梯度下降法)相反，FW 算法不需要投影，因此有时称之为无投影算法，但需要求解\textbf{算法1}第3 步中的问题：
+%把$\, \textbf{x}_{t} \,$定义为一个最大化的值，强调它的直观意义作为最陡峭下降（负梯度）最相关的元素。这些名称来自于这样一个事实，即其他引用将其等价地定义为最小化:
+\begin{Large}
+\begin{equation}
+\textbf{\emph{s}}_{t} \in \mathop{\rm argmin}_{\textbf{\emph{s}} \in \mathcal{D}}{\left \langle \nabla f(\textbf{\emph{x}}_{t}),\textbf{\emph{s}} \right \rangle}
+\end{equation}
+\end{Large}
+
+算法的其余部分主要是寻找合适的步长，以便$f(\textbf{\emph{x}})$ 朝减小的方向移动。在FW 算法所允许的许多不同的步长规则中，我们将其分为变形1 和变形2。 第1 个变形很容易计算，只依赖于Lipschitz 常数$L$ 的知识。第2 个变形需要在每次迭代时解决一个一维问题。在某些情况下如当目标函数$\, f \,$ 为最小二乘问题且约束集$\, \mathcal{D} \,$ 是$\, \ell_{1} \,$ 范数球时，步长选择这个问题有一个显式的最优解，在这种情况下，应首选变型2 这种方法。但是，在一般情况下如果没有显式的最优解，在这种情况下，应首选变形1。
+
+可以看到Frank-Wolfe算法是一种通过求解一系列线性规划问题来解决潜在非线性问题的算法，这种方法的有效性与快速解决线性子问题的能力紧密相连。这与其他一阶方法(如Nesterov的加速方法)形成了对比，后者的前提是在每次迭代中能够解决由强凸$prox$函数定义的某些投影问题。在许多应用中，求解一个线性优化子问题要比求解相关的投影子问题简单得多。此外，在许多应用中，线性优化子问题的解通常是高度结构化的，并表现出特殊的稀疏性和/或低秩性，法兰克- 沃尔夫方法可以利用这一点
+
+
+事实证明，对于规模较大的问题的线性子问题既有闭式解，也有有效算法。与投影相比，使用线性最小化还有其他重要的结果。根据线性规划的性质，这种线性极小化问题的最优解总是约束集的一个顶点。还有一些其它设置步长大小的策略。例如，步长也可以设置为$\, \gamma_{t}=\frac{2}{t+2}\,$, 它不依赖于优化产生的任何其它变量。因此，它在实践中不能与其它选择步长的策略竞争，尽管它确实达到了相同的理论收敛速度。对于$\gamma_{t}$还有一种选择，是由Demyanov 和Rubinov 提出来的，与变形1比较相似：
+\begin{equation}
+\gamma_{t}=\rm min\Big\{\frac{g_{t}}{L \rm diam(\mathcal{D})^2 },1\Big\}
+\end{equation}
+其中$\rm diam$表示相对于欧几里德范数的直径。然而，由于根据直径的定义，我们总是有:
+\begin{equation}
+\left \| \textbf{\emph{x}}_{t}-\textbf{\emph{s}}_{t} \right \|^2 \leq \rm diam(\mathcal{D})^2
+\end{equation}
+这个变形提供的步长总是小于变形1的步长，并且给出了更差的收敛性。对该步长的进一步改进包括用局部估计替换Lipschitz常数$L$，从而允许更大的步长。
+
+\section{收敛性分析}
+
+Frank-Wolfe算法在一般情况下收敛。正如已经看到的，凸的目标函数是必要的，以获得收敛保证。如前所述，假设$f$ 在$L$-Lipschitz 梯度下是可微的，$\mathcal{D}$ 是一个凸紧集。在这一部分，将给出两个主要的收敛结果：一个用于一般目标，一个用于凸目标。为简单起见，假设线性子问题被精确地求解，但是这些证明可以很容易地扩展到考虑近似线性最小化的问题上去。本节的其余部分结构如下：首先介绍了两个关键定义和技术引理，最后证明了收敛性结果。
+
+
+\begin{definition}
+称$\textbf{x}^* \in \mathcal{D}$为最优点，当且仅当：
+\begin{equation}
+\left \langle \nabla f(\textbf{x}^*),\textbf{x}-\textbf{x}^* \right \rangle \ge 0 ,  \, \forall  \textbf{x} \in \mathcal{D}.
+\end{equation}
+\end{definition}
+这个定义的直观含义是，如果以$\, \textbf{\emph{x}}^*\,$起点的多面体中的每个方向都与梯度正相关，则$\, \textbf{\emph{x}}^*\,$是一个最优点。否则，如果以$\textbf{\emph{x}}^*$起点没有可行的下降方向，$\textbf{\emph{x}}^*$ 是一个最优点。
+
+%\newtheorem{definition}{Definition}
+\begin{definition}
+将{\rm Frank-Wolfe}间隙记成$\, g_{t} \,$, 定义为：
+\begin{equation}
+g_{t} = \left \langle \nabla f(\textbf{x}_{t}),\textbf{x}_{t}-\textbf{s}_t \right \rangle.
+\end{equation}
+\end{definition}
+
+下一个引理将连续两次迭代的目标函数值联系起来，对于凸和非凸目标，它在证明收敛结果的过程中起到了关键作用。
+\begin{lemma}
+令$\, {\textbf{x}_{0},\textbf{x}_{1},\cdots } \,$是由{\rm FW} 算法产生的迭代序列，对于任意的$\, \xi \in [0,1]\,$, 有下面的不等式：
+\begin{equation}
+f(\textbf{x}_{t+1}) \leq f(\textbf{x}_{t})-\xi g_{t}+\frac{1}{2} \xi^2 L \rm diam(\mathcal{D})^2
+\end{equation}
+\end{lemma}
+
+\begin{proof}[证明]
+关于$f$的Lipschitz梯度假设的一个结果是，$\, y \in \mathcal{D}\,$ 的每一点有上界，即：
+\begin{equation}
+f(\textbf{\emph{y}}) \leq f(\textbf{\emph{x}})+\left \langle \nabla f(\textbf{\emph{x}}),\textbf{\emph{y}}-\textbf{\emph{x}} \right \rangle+\frac{1}{2} \left \| \textbf{\emph{y}}-\textbf{\emph{x}} \right \|^2
+\end{equation}
+应用这个不等式，对定义域中的任何$\,\textbf{\emph{x}},\textbf{\emph{y}}\,$ 都有效。对于$\gamma \in [0,1]$且$\,\textbf{\emph{x}}=\textbf{\emph{x}}_{t},\textbf{\emph{y}}=(1-\gamma)\textbf{\emph{x}}_{t}+\gamma \textbf{\emph{s}}_{t}\,$的情况，$\,\textbf{\emph{y}}\,$ 仍然在定义域中，我们有：
+\begin{equation}
+f((1-\gamma)\textbf{\emph{x}}_{t}+\gamma  \textbf{\emph{s}}_{t}) \leq  f(\textbf{\emph{x}})_{t}+\gamma   \left \langle \nabla f(\textbf{\emph{x}}_{t}),\textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t} \right \rangle+\frac{L \gamma^2}{2}\left \| \textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t} \right \|^2
+\end{equation}
+当$\,\gamma \in [0,1]\,$时，需要最小化上面公式的右边部分。这是一个最小化$\,\gamma\,$ 的二次函数，将$\,\gamma_{t}^*\,$记为：
+\begin{equation}
+\gamma_{t}^* = \rm min \Big \{\frac{g_{t}}{L\left \|\textbf{\emph{x}}_{t}-\textbf{\emph{s}}_{t} \right \|^2},1 \Big \}.
+\end{equation}
+当$\, \gamma=\gamma_{t}^*\,$时，有：
+
+\begin{equation}\label{}
+\begin{split}
+f((1-\gamma_{t}^*)\textbf{\emph{x}}_{t}+\gamma_{t}^* \textbf{\emph{s}}_{t})
+&\leq f(\textbf{\emph{x}}_{t})-\gamma_{t}^*g_{t}+\frac{L (\gamma_{t}^*)^2}{2}\left \| \textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t} \right \|^2\\
+&=f(\textbf{\emph{x}}_{t})+\rm \mathop{min}_{\xi \in [0,1]}{\Big \{-\xi g_{t}+\frac{L \xi^2}{2}\left \| \textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t} \right \|^2 \Big \}} \\
+&\leq f(\textbf{\emph{x}}_{t})-\xi g_{t}+\frac{L \xi^2}{2}\left \| \textbf{\emph{s}}_{t}-\textbf{\emph{x}}_{t} \right \|^2 \quad (\forall  \xi\in [0,1])\\
+&\leq f(\textbf{\emph{x}}_{t})-\xi g_{t}+\frac{L \xi^2}{2}\rm diam(\mathcal{D})^2.
+\end{split}
+\end{equation}
+上述不等式的右边已经包含引理中的结果，对于算法的变形1，我们有$\,f(\textbf{\emph{x}}_{t+1})=f((1-\gamma_{t}^*)\textbf{\emph{x}}_{t}+\gamma_{t}^* \textbf{\emph{s}}_{t})\,$, 这种情况下$\,\gamma_{t}\,$ 和$\,\gamma_{t}^*\,$ 相等。对于算法的变形2, 我们有$\, f(\textbf{\emph{x}}_{t+1}) \leq f((1-\gamma_{t}^*)\textbf{\emph{x}}_{t}+\gamma_{t}^* \textbf{\emph{s}}_{t})$, 根据线搜索的定义，$f(\textbf{\emph{x}}_{t+1})$ 是最小化的目标函数值。因此，无论是哪种情况，我们都有：
+\begin{equation}
+f(\textbf{\emph{x}}_{t+1}) \leq f((1-\gamma_{t}^*)\textbf{\emph{x}}_{t}+\gamma_{t}^* \textbf{\emph{s}}_{t}).
+\end{equation}
+将该式与前一个不等式联系起来，便得到要证明的不等式。
+\end{proof}
+
+\subsection{目标函数非凸}
+下面是第一个收敛速度结果，对于梯度$\,L\,$-Lipschitz目标函数是有效的。
+
+\begin{theorem}
+如果$\,f\,$是可微的且具有$L$-$\rm Lipschitz$ 梯度，那么在最佳$\rm Frank$-$\rm Wolfe$间隙上有$\mathcal{O}(1/\sqrt{t})$的上界：
+\begin{equation}
+\mathop{\rm min}\limits_{0 \leq i \leq t}{g_{i}} \leq \frac{{\rm max}{\{2h_{0},L* \rm diam(\mathcal{D})^2}\}}{\sqrt{t+1}},
+\end{equation}
+其中$h_{0}=f(\textbf{x}_{0}) - \mathop{\rm min}\limits_{\textbf{x} \in \mathcal{D}}{f(\textbf{x})}$是初始全局次优的。
+\end{theorem}
+
+\begin{proof}[证明]
+根据引理1, 对于任意的$\xi \in [0,1]$有:
+\begin{equation}\label{}
+\begin{split}
+f(\textbf{\emph{x}}_{t+1})
+&\leq f(\textbf{\emph{x}}_{t}) - \xi g_{t} + \frac{L \xi^2}{2}\rm diam(\mathcal{D})^2\\
+&\leq f(\textbf{\emph{x}}_{t}) - \xi g_{t} + \frac{C \xi^2}{2}
+\end{split}
+\end{equation}
+其中$\,C=L\rm diam(\mathcal{D})^2\,$. 考虑使右边公式最小化的$\,\xi\,$ 的值，可得$\xi^*=\rm min\{g_{t}/C,1\}$，现在根据$\xi^*$ 的值做出选择，如果$\,g_{t} \leq C\,$,则$\,\xi^*=g_{t}/C\,$，利用上一个不等式中的值，得到：
+\begin{equation}
+f(\textbf{\emph{x}}_{t+1}) \leq f(\textbf{\emph{x}}_{t})-\frac{g_{t}^2}{2C}
+\end{equation}
+如果$\,g_{t} > C\,$,则$\,\xi^*=1\,$,有下面的不等式:
+\begin{equation}\label{}
+\begin{split}
+f(\textbf{\emph{x}}_{t+1})
+&\leq f(\textbf{\emph{x}}_{t}) -  g_{t} + \frac{C}{2}\\
+&\leq f(\textbf{\emph{x}}_{t}) - \frac{ g_{t}}{2}
+\end{split}
+\end{equation}
+结合两式得：
+\begin{equation}\label{}
+f(\textbf{\emph{x}}_{t+1}) \leq f(\textbf{\emph{x}}_{t}) - \frac{ g_{t}}{2}{\rm min}\big\{\frac{g_{t}}{C},1\big\}
+\end{equation}
+其中$g_{t}^*=\mathop{\rm min}\limits_{0\leq i\leq t} g_{i}$, 接下来对$\,g_{t}^*\,$ 进行选择，如果$\,g_{t}^* \leq C$, 则$\mathop{\rm min} \{g_{t}^*/C,1\}=g_{t}^*/C\, $解前面关于$g_{t}^*$的不等式得：
+\begin{equation}\label{}
+\begin{split}
+g_{t}^* \leq \sqrt{\frac{2Ch_{0}}{t+1}} \leq \frac{2h_{0}+C}{2\sqrt{t+1}}
+&\leq \frac{{\rm max}\{2h_{0},C\}}{\sqrt{t+1}}\\
+\end{split}
+\end{equation}
+在第二个不等式中利用$\rm Young\,$不等式$ab \leq \frac{a^2}{2}+\frac{b^2}{2}$, $a=\sqrt{2h_{0}}$, $b=\sqrt{C}$.
+
+如果$\,g_{t}^* > C\,$，则$\mathop{\rm min}\{g_{t}^*/C,1\}=1\,$, 且有：
+\begin{equation}\label{}
+g_{t}^* \leq \frac{2Ch_{0}}{t+1} \leq \frac{2h_{0}}{\sqrt{t+1}} \leq \frac{{\rm max}\{2h_{0},C\}}{\sqrt{t+1}}
+\end{equation}
+因此，在这两种情况下可得：
+\begin{equation}\label{}
+g_{t}^* \leq  \frac{{\rm max}\{2h_{0},C\}}{\sqrt{t+1}}
+\end{equation}
+%从而所定理中的上界来自$\,g_{t}^*\,$的定义。
+
+\end{proof}
+
+
+\subsection{目标函数为凸}
+
+
+\begin{theorem}
+如果$\,f\,$是可微凸函数，且梯度$L$-$\rm Lipschitz$，则对于函数的次优性有如下的收敛速度:
+\begin{equation}
+f(\textbf{x}_{t})-f(\textbf{x}^*) \leq \frac{2L*\rm diam(\mathcal{D})^2}{t+1}
+\end{equation}
+\end{theorem}
+\begin{proof}[证明]
+由凸性可得:
+\begin{equation}
+f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*) \leq \left \langle \nabla f(\textbf{\emph{x}}^*),\textbf{\emph{x}}-\textbf{\emph{x}}^* \right \rangle
+\end{equation}
+令$e_{t}=\textbf{\emph{A}}_{t}(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*))$, $\textbf{\emph{A}}_{t}$是正定的，$C=L\rm diam(\mathcal{D})^2$，然后可以得到下面的不等式：
+\begin{equation}\label{}
+\begin{split}
+e_{t+1}-e_{t}
+&= \textbf{\emph{A}}_{t+1}(f(\textbf{\emph{x}}_{t+1})-f(\textbf{\emph{x}}^*)) - \textbf{\emph{A}}_{t}(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*))\\
+&\leq \textbf{\emph{A}}_{t+1}(f(\textbf{\emph{x}}_{t})-\xi g_{t} + \frac{\xi^2 C}{2}-f(\textbf{\emph{x}}^*))-\textbf{\emph{A}}_{t}(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*)) \qquad \\
+&\leq \textbf{\emph{A}}_{t+1}(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*)-\xi(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*))+\frac{\xi^2C}{2})-
+\textbf{\emph{A}}_{t}(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*))\\
+&= ((1-\xi)\textbf{\emph{A}}_{t+1}-\textbf{\emph{A}}_{t})(f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*))+\textbf{\emph{A}}_{t+1}\frac{\xi^2C}{2}
+\end{split}
+\end{equation}
+现在，选择$\,\textbf{\emph{A}}_{t}=\frac{t(t+1)}{2}\,$, $\,\xi = 2/(t+2)\,$, 我们有：
+\begin{equation}\label{}
+\begin{split}
+(1-\xi)\textbf{\emph{A}}_{t+1}-\textbf{\emph{A}}_{t}
+&=\frac{t(t+1)}{2}-\frac{t(t+1)}{2} = 0
+\end{split}
+\end{equation}
+
+\begin{equation}\label{}
+\begin{split}
+\textbf{\emph{A}}_{t+1}\frac{\xi^2}{2} = \frac{t+1}{t+2} \leq 1,
+\end{split}
+\end{equation}
+因此将式中的$\,\textbf{\emph{A}}_{t}\,$和$\xi$替换, 则有：
+\begin{equation}
+e_{t+1}-e_{t}\leq C.
+\end{equation}
+将不等式从$\,0\,$加到$\,t-1\,$，并使用$\,e_{0}=0\,$，可得：
+\begin{equation}
+e_{t}\leq tC 	\Longrightarrow f(\textbf{\emph{x}}_{t})-f(\textbf{\emph{x}}^*)\leq \frac{2C}{t+1}.
+\end{equation}
+$\,\,$$\,\,$$\,\,$$\,\,$$\,\,$$\,\,$
+\end{proof}
+
+
+\subsection{目标函数为强凸}
+
+\begin{definition}
+$\rm ($光滑函数$\rm )$设凸集$\mathcal{K} \subset \textbf{E}$, 称函数$f:\textbf{E}\rightarrow \mathcal{R}$ 是光滑函数, 当且仅当对于$\forall \textbf{x},\textbf{y} \in \mathcal{K}$有：
+\begin{equation}
+f(\textbf{y})\leq f(\textbf{x})+\nabla f(\textbf{x})\cdot (\textbf{y}-\textbf{x})+\frac{\beta}{2}\|\textbf{x}-\textbf{y}\|^2.
+\end{equation}
+\end{definition}
+
+\begin{definition}
+$\rm ($强凸函数$\rm )$设凸集$ \mathcal{K} \subset \textbf{E}$, 称函数$f:\textbf{E} \rightarrow \mathcal{R}$ 是$\alpha$强凸函数, 当且仅当满足以下两个条件：
+
+$\bullet$~~$1.\forall \textbf{x},\textbf{y} \in \mathcal{K}:$
+$$
+f(\textbf{y})\geq f(\textbf{x})+\nabla f(\textbf{x})\cdot (\textbf{y}-\textbf{x})+\frac{\alpha}{2}\|\textbf{x}-\textbf{y}\|^2.
+$$
+
+$\bullet$~~$2.\forall \textbf{x},\textbf{y} \in \mathcal{K},\gamma \in [0,1]:$
+$$
+f(\gamma \textbf{x} +(1-\gamma)\textbf{y})\leq \gamma f(\textbf{x})+(1-\gamma) f(\textbf{y})-\frac{\alpha}{2}\gamma(1-\gamma)\|\textbf{x}-\textbf{y}\|^2.
+$$
+\end{definition}
+
+若$f$是强凸的，$\textbf{\emph{x}}^*=\mathop{\rm argmax}\limits_{\textbf{\emph{x}} \in \mathcal{K}}f(\textbf{\emph{x}})$, 由一阶最优性条件可得，对任意$\textbf{\emph{x}} \in \mathcal{K}$：
+\begin{equation}
+f(\textbf{\emph{x}})-f(\textbf{\emph{x}}^*)\geq \frac{\alpha}{2}\|\textbf{\emph{x}}-\textbf{\emph{x}}^*\|^2
+\end{equation}
+稍作变换，有：
+\begin{align}
+\sqrt{\frac{2}{\alpha}(f(\textbf{\emph{x}})-f(\textbf{\emph{x}}^*))}\cdot \|\nabla f(\textbf{\emph{x}})\|_*
+&\geq \|\textbf{\emph{x}}-\textbf{\emph{x}}^*\|\cdot \|\nabla f(\textbf{\emph{x}})\|_*\\
+& \geq (\textbf{\emph{x}}-\textbf{\emph{x}}^*) \cdot \nabla f(\textbf{\emph{x}}) \\
+&\geq f(\textbf{\emph{x}})-f(\textbf{\emph{x}}^*)
+\end{align}
+其中第二个不等式利用$\rm Holder$不等式，第三个不等式来自$f$的凸性。因此对任意$\textbf{\emph{x}} \in \mathcal{K}$ 有：
+\begin{equation}
+\label{equ3}
+\|\nabla f(\textbf{\emph{x}})\|_* \geq \sqrt{\frac{\alpha}{2}}\cdot \sqrt{f(\textbf{\emph{x}})-f(\textbf{\emph{x}}^*)}
+\end{equation}
+
+
+
+\begin{definition}
+$\rm ($强凸集$\rm )$称凸集$\mathcal{K} \subset \textbf{E}$是$\alpha$强凸集, 当且仅当$\forall \textbf{x},\textbf{y} \in \mathcal{K}, \forall \gamma \in [0,1]$, 以及$\textbf{z}\in \textbf{E}$ 且$\|\textbf{z}\|=1$, 有：
+\begin{equation}
+\gamma \textbf{x}+(1-\gamma)\textbf{y}+\gamma (1-\gamma)\frac{\alpha}{2}\|\textbf{x}-\textbf{y}\|^2  \textbf{z} \in \mathcal{K}.
+\end{equation}
+也就是说$\mathcal{K}$包含以$\gamma \textbf{x}+(1-\gamma)\textbf{y}$ 为中心，半径为$\gamma (1-\gamma)\frac{\alpha}{2}\|\textbf{x}-\textbf{y}\|^2$ 的球.
+\end{definition}
+
+接下来考虑函数$f$, $f$是$\beta_f$光滑的以及$\alpha_f$强凸，我们进一步假设可行集$\mathcal{K}$是$\alpha_{\mathcal{K}}$强凸的。在$\textbf{\emph{x}}_t$处的逼近误差记为$h_t$, $h_t=\mathop{\rm argmin}\limits_{\textbf{\emph{x}} \in \mathcal{K}}f(\textbf{\emph{x}})$, 其中$\textbf{\emph{x}}^*=\mathop{\rm argmin}\limits_{\textbf{\emph{x}} \in \mathcal{K}}f(\textbf{\emph{x}})$.
+\begin{lemma} \label{lemma2}
+使用$\rm FW$算法，在第t步迭代有：
+\begin{equation}
+h_{t+1}\leq h_{t} \cdot {\rm max}\{\frac{1}{2},1-\frac{\alpha_{\mathcal{K}} \|\nabla f(\textbf{\emph{x}}_t) \|_*}{8 \beta_f}\}
+\end{equation}
+\end{lemma}
+\begin{proof}[证明]
+由$\textbf{\emph{s}}_t$的取法得：
+\begin{equation}
+\label{equ1}
+(\textbf{\emph{s}}_t-\textbf{\emph{x}}_t)\cdot \nabla f(\textbf{\emph{x}}_t) \leq (\textbf{\emph{x}}^*-\textbf{\emph{x}}_t)\cdot \nabla f(\textbf{\emph{x}}_t) \leq f(\textbf{\emph{x}}^*)-f(\textbf{\emph{x}}_t) =-h_t
+\end{equation}
+第二个不等式是由于$f$的凸性。记$\textbf{\emph{c}}_t=\frac{1}{2}(\textbf{\emph{x}}_t+\textbf{\emph{s}}_t),\textbf{\emph{w}}_t \in \mathop{\rm argmin}\limits_{\textbf{\emph{w}} \in \textbf{E},\|\textbf{\emph{w}}\|\leq 1}\textbf{\emph{w}} \cdot \nabla f(\textbf{\emph{x}}_t)$. 由Holder不等式可得$\textbf{\emph{w}}_t \cdot \nabla f(\textbf{\emph{x}}_t)=-\|\nabla f(\textbf{\emph{x}}_t)\|_* $, 由可行集的强凸性，点$\tilde{\textbf{\emph{p}}}_t=\textbf{\emph{c}}_t+\frac{\alpha_{\mathcal{K}}}{8}\|\textbf{\emph{x}}_t-\textbf{\emph{p}}_t\|^2\textbf{\emph{z}}$ 也在可行集$\mathcal{K}$中。再次利用$\textbf{\emph{s}}_t$的最优性可得：
+\begin{align}
+\label{equ2}
+(\textbf{\emph{s}}_t-\textbf{\emph{x}}_t)\cdot \nabla f(\textbf{\emph{x}}_t)
+&\leq(\tilde{\textbf{\emph{p}}}_t-\textbf{\emph{x}}_t) \cdot \nabla f(\textbf{\emph{x}}_t) \\
+&= \frac{1}{2}(\textbf{\emph{p}}_t-\textbf{\emph{x}}_t)\nabla f(\textbf{\emph{x}}_t) + \frac{\alpha_{\mathcal{K}}\|\textbf{\emph{x}}_t-\textbf{\emph{p}}_t\|^2}{8}\textbf{\emph{w}}_t \cdot \nabla f(\textbf{\emph{x}}_t)\\
+&\leq -\frac{1}{2}h_t-\frac{\alpha_{\mathcal{K}}\|\textbf{\emph{x}}_t-\textbf{\emph{p}}_t\|^2}{8}\|\nabla f(\textbf{\emph{x}}_t)\|_*
+\end{align}
+上面最后一个不等式来自式子(\ref{equ1})。现在分析下降时的误差，由于$f$ 是光滑函数得：
+\begin{equation}
+f(\textbf{\emph{x}}_{t+1})\leq f(\textbf{\emph{x}}_t) +\gamma_t(\textbf{\emph{p}}_t-\textbf{\emph{x}}_t)\cdot \nabla f(\textbf{\emph{x}}_t) + \frac{\beta_f}{2}\gamma_t^2 \|\textbf{\emph{p}}_t-\textbf{\emph{x}}_t\|^2.
+\end{equation}
+上式两边同时减去$f(\textbf{\emph{x}}^*)$得：
+\begin{equation}
+h(\textbf{\emph{x}}_{t+1})\leq h(\textbf{\emph{x}}_t) +\gamma_t(\textbf{\emph{p}}_t-\textbf{\emph{x}}_t)\cdot \nabla f(\textbf{\emph{x}}_t) + \frac{\beta_f}{2}\gamma_t^2 \|\textbf{\emph{p}}_t-\textbf{\emph{x}}_t\|^2.
+\end{equation}
+结合(\ref{equ2})式有：
+\begin{align}
+h_{t+1} &\leq h_t(1-\frac{\gamma_t}{2})-\gamma_t \frac{\alpha_{\mathcal{K}}\|\textbf{\emph{x}}_t-\textbf{\emph{p}}_t\|^2}{8}\|\nabla f(\textbf{\emph{x}}_t)\|_* +  \frac{\beta_f}{2}\gamma_t^2 \|\textbf{\emph{p}}_t-\textbf{\emph{x}}_t\|^2 \\
+&=h_t(1-\frac{\gamma_t}{2})+\frac{\|\textbf{\emph{p}}_t-\textbf{\emph{x}}_t\|^2}{2}\big(\gamma_t^2 \beta -\gamma_t \frac{\alpha_{\mathcal{K}}\|\nabla f(\textbf{\emph{x}}_t)\|_*}{4}\big).
+\end{align}
+当$\frac{\alpha_{\mathcal{K}}\|\nabla f(\textbf{\emph{x}}_t)\|_*}{4} \geq \beta_f$, 令$\gamma_t=1$可得：
+\begin{equation}
+h_{t+1} \leq \frac{h_t}{2}.
+\end{equation}
+其他情况下，令$\gamma_t=\frac{\alpha_{\mathcal{K}}\|\nabla f(\textbf{\emph{x}}_t)\|_*}{4}$可得：
+\begin{equation}
+h_{t+1} \leq h_t\big(1-\frac{\alpha_{\mathcal{K}}\|\nabla f(\textbf{\emph{x}}_t)\|_*}{8}\big).
+\end{equation}
+\end{proof}
+
+
+注意到\textbf{引理}\ref{lemma2}只依赖于可行集$\mathcal{K}$的强凸性，不需要利用$f$的凸性与函数光滑的条件，也不要求$f$是强凸的。
+
+\begin{theorem}
+令$\textbf{x}^*=\mathop{\rm argmin}\limits_{\textbf{x} \in \mathcal{K}}f(\textbf{x}),M=\frac{\sqrt{\alpha_f}\alpha_{\mathcal{K}}}{8\sqrt{2}\beta_f}$, 记$D_{\mathcal{K}}=\mathop{\rm max}\limits_{\textbf{x},\textbf{y}\in \mathcal{K}}\|\textbf{x}-\textbf{y}\|$,由$\rm FW$算法得到的第$t$ 个迭代点$\textbf{x}_t$满足：
+\begin{equation}
+f(\textbf{x}_{t})-f(\textbf{x}^*) \leq \frac{\mathop{\rm max}\{\frac{9}{2}\beta_f D_{\mathcal{K}}^2,18M^{-2}\}}{(t+2)^2}=\mathcal{O}(\frac{1}{t^2})
+\end{equation}
+\end{theorem}
+\begin{proof}[证明]
+令$M=\frac{\sqrt{\alpha_f}\alpha_{\mathcal{K}}}{8\sqrt{2}\beta_f},  C=\mathop{\rm max}\{\frac{9}{2}\beta_f D_{\mathcal{K}}^2,18M^{-2}\}$. 接下来通过数学归纳法证明$\forall t >1, \, h_t \leq \frac{C}{(t+2)^2}$.
+
+由于目标函数满足式子(\ref{equ3}), 由\textbf{引理}\ref{lemma2} 得：
+\begin{align}
+\label{equ4}
+h_{t+1}
+&\leq h_{t} \cdot \mathop{\rm max}\{\frac{1}{2},1-\frac{\alpha_{\mathcal{K}}\sqrt{\alpha_{f}}}{8\sqrt{2}\beta_f}\sqrt{h_t}\}\\
+&=h_t \cdot \mathop{\rm max}\{\frac{1}{2},1-M h_t^{1/2}\}
+\end{align}
+当$t=1$,  由于$f$是$\beta_f$光滑的可得:
+\begin{align}
+f(\textbf{\emph{x}}_1)-f(\textbf{\emph{x}}^*)
+&=f(\textbf{\emph{x}}_0+\gamma_0(\textbf{\emph{p}}_0-\textbf{\emph{x}}_0))-f(\textbf{\emph{x}}^*)\\
+&\leq h_0+\gamma_0(\textbf{\emph{p}}_0-\textbf{\emph{x}}_0)\cdot \nabla f(\textbf{\emph{x}}_0)+\frac{\beta_f \gamma_0^2}{2}D_{\mathcal{K}}^2\\
+&\leq h_0(1-\gamma_0)+\frac{\beta_f\gamma_0^2}{2}D_{\mathcal{K}}^2.
+\end{align}
+令$\gamma_0=1$得$h_1 \leq \frac{\beta_f}{2}D_{\mathcal{K}}^2\leq C/9$. 故当$t=1$, $h_1=f(\textbf{\emph{x}}_1)-f(\textbf{\emph{x}}^*)\leq C/4$ 成立。\\
+假设对于任意$t\geq 1$有$h_t \leq \frac{C}{(t+2)^2}$. 由式子(\ref{equ4})得：
+\begin{equation}
+\label{equ5}
+h_{t+1}\leq \frac{h_t}{2} \leq \frac{C}{2(t+2)^2} = \frac{C}{(t+3)^2}\cdot \frac{(t+3)^2}{2(t+2)^2} \leq \frac{C}{(t+3)^2}
+\end{equation}
+如果$h_t\leq \frac{C}{2(t+3)^2}$. 由式子(\ref{equ5})得，对任意$t\geq 1$ 有：
+\begin{equation}
+h_{t+1}\leq h_{t} \leq \frac{C}{2(t+2)^2}\leq \frac{C}{(t+3)^2}.
+\end{equation}
+若$h_t\geq \frac{C}{2(t+2)^2}$, 由式子(\ref{equ5})得：
+\begin{align}
+h_{t+1} &\leq h_t (1-M h_t^{1/2}) \\
+&<\frac{C}{(t+2)^2}\big(1-M\sqrt{\frac{C}{2}}\frac{1}{t+2}\big) \\
+&=\frac{C}{(t+3)^2} \cdot \frac{(t+3)^2}{(t+2)^2} \big(1-M\sqrt{\frac{C}{2}}\frac{1}{t+2}\big) \\
+&=\frac{C}{(t+3)^2} \cdot \frac{(t+2)^2+2t+5}{(t+2)^2}\big(1-M\sqrt{\frac{C}{2}}\frac{1}{t+2}\big) \\
+&<\frac{C}{(t+3)^2}\big(1+\frac{3(t+2)}{(t+3)^2}\big)\big(1-M\sqrt{\frac{C}{2}}\frac{1}{t+2}\big)\\
+&=\frac{C}{(t+3)^2}\big(1+\frac{3}{t+3}\big)\big(1-M\sqrt{\frac{C}{2}}\frac{1}{t+2}\big)\\
+\end{align}
+故对于$C\geq \frac{18}{M^2}$可得：
+\begin{equation}
+h_{t+1}\leq \frac{C}{(t+2)^2}\big(1+\frac{3}{t+2}\big)\big(1-\frac{3}{t+2}\big)<\frac{C}{(t+3)^2}
+\end{equation}
+
+\end{proof}
+
+
+
+{\footnotesize
+\renewcommand{\baselinestretch}{1} %修改行距
+\begin{thebibliography}{1}
+\bibitem{Fabian}
+Fabian Pedregosa.Notes on the Frank-Wolfe Algorithm, Part I，http://fa.bianp.net/blog/2018/notes-on-the-frank-wolfe-algorithm-part-i/
+\bibitem{Dan}
+Dan Garber,Elad Hazan,Faster Rates for the Frank-Wolfe Method over Strongly-Convex Sets
+
+\end{thebibliography}
+
+\end{document}

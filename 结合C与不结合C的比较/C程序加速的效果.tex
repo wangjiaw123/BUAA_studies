@@ -1,0 +1,445 @@
+\documentclass[11pt,CJK]{cctart}
+%\usepackage{}
+\usepackage{caption}% 调用标题宏包来修改标题的格式，居中对齐ll
+\usepackage[paperwidth=8.8in,paperheight=11in,left=1in, right=1in, top=1in, bottom=1in]{geometry}% 版面设计
+\usepackage{cite}
+\usepackage{latexsym}
+\usepackage[dvips]{graphicx}
+\usepackage[cmex10,tbtags]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm,multicol,amscd}
+\usepackage{amsfonts}
+\usepackage{mathbbold}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{supertabular}
+\usepackage{diagbox}
+\usepackage{tikz}
+\usepackage{palatino}
+\usepackage{longtable}
+\usepackage{abstract}
+\usepackage[justification=centering]{caption}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{verbatim} %用于注释\begin{comment}...\end{comment}
+\usepackage{picins}
+\usepackage{appendix}
+%\usepackage{listings} %用于输入程序
+%\usepackage{xcolor}
+\usetikzlibrary{shapes.geometric, arrows}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}
+\newtheorem{definition}{定义}
+\renewcommand {\baselinestretch} {1.2}
+\renewcommand {\arraystretch} {1.2}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}   %配合\tabincell{c}{word \\ word} 用于表格内强制换行
+%%%%%%%%%%%%%%%%%%%%%%%
+%Latex 算法过长 分页显示方法，引用algorithm 包，在\%begin{document} 前加上以下Latex 代码，使用\begin{breakablealgorithm} 和\end{breakablealgorithm} 替换\begin{algorithm} 和\end{algorithm}
+
+
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\newtheorem{proof}{证明}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}[section]
+%\documentclass{article}
+%\pagestyle{empty}
+
+
+
+
+\begin{document}
+
+\title{结合C程序与不结合C程序效果的比较}
+\maketitle
+
+
+
+
+
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同情况下训练二型Mamdani模糊逻辑系统的串行时间(只使用MATLAB程序)}\label{table:label}
+\\ \hline
+\diagbox{$\rm Rule\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+20   & 18.98 & 39.53  & 60.65 & 77.90 & 95.95  & 116.37      \\ \hline
+40   & 37.08 & 73.17  & 109.24& 146.65& 180.16& 224.68 \\ \hline
+60   & 54.80 & 107.55 & 162.00& 213.77& 260.40 &310.81      \\ \hline
+80   & 68.89 & 137.83  & 204.80&274.07& 343.72  &410.85      \\ \hline
+%100  & 86.78 & 171.95  & 258.03&343.62& 436.64  &519.76      \\ \hline
+\end{longtable}
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同情况下训练二型Mamdani模糊逻辑系统的串行时间(MATLAB和C的混合编程)}\label{table:labelC1}
+\\ \hline
+\diagbox{$\rm Rule\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000  & 2500   &  3000     \\ \hline
+20    & 0.37 & 0.69  & 1.02   & 1.42   & 1.80  & 2.08      \\ \hline
+40    & 0.68 & 1.35  & 2.01   & 2.69   & 3.33  & 4.03 \\ \hline
+60    & 1.14 & 2.19  &  3.28  & 4.48   & 5.51  & 6.57      \\ \hline
+80    & 1.60 & 3.28  & 4.87   & 6.47   & 8.02  & 9.76      \\ \hline
+%100  & 86.78 & 171.95  & 258.03&343.62& 436.64  &519.76      \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{‘加速比’(使用MATLAB和C的混合编程)}\label{table:labelC2}
+\\ \hline
+\diagbox{$\rm Rule\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+20   & 50.28 & 54.09 & 56.02 & 54.16 & 52.66 & 55.72      \\ \hline
+40   & 53.83 & 54.42  & 54.10& 53.80 & 54.18 & 54.93 \\ \hline
+60   & 47.01 & 48.74 & 48.72 & 48.24 & 49.17  &49.38      \\ \hline
+80   & 45.21 & 43.70  & 43.71& 43.97 & 44.97  &44.42      \\ \hline
+%100  & 86.78 & 171.95  & 258.03&343.62& 436.64  &519.76      \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+
+
+
+
+
+
+
+
+$\textbf{注:}$未加黑字体的数据是通过MATLAB程序得到的，加黑字体的数据是通过MATLAB和C的混合编程得到的。
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{加速比(规则数量为20)}\label{table:labe6}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Speedup\;ratio$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 1.13 $/ \textbf{4.98}$ & 1.45$/ \textbf{15.55}$ & 1.62$/ \textbf{23.82}$ & 1.64$/ \textbf{25.80}$ & 1.63$/ \textbf{26.70}$  & 1.72$/ \textbf{29.90}$      \\ \hline
+4   & 1.59 $/ \textbf{4.75}$ & 2.24$/ \textbf{13.98}$ & 2.71$/ \textbf{19.04}$ & 2.75$/ \textbf{21.73}$ & 2.92$/ \textbf{25.62}$  & 3.01$/ \textbf{28.29}$ \\ \hline
+6   & 1.86 $/ \textbf{4.30}$ & 2.72$/ \textbf{13.10}$ & 3.36$/ \textbf{17.41}$ & 3.47$/ \textbf{21.84}$ & 3.70$/ \textbf{24.77}$  & 4.01$/ \textbf{26.75}$      \\ \hline
+8   & 2.06 $/ \textbf{4.22}$ & 3.06$/ \textbf{12.81}$ & 3.82$/ \textbf{17.26}$ & 4.05$/ \textbf{20.37}$ & 4.36$/ \textbf{23.19}$  & 4.63$/ \textbf{26.45}$     \\ \hline
+10  & 2.32 $/ \textbf{4.31}$ & 3.52$/ \textbf{12.19}$ & 4.52$/ \textbf{17.16}$ & 4.94$/ \textbf{18.91}$ & 5.25$/ \textbf{22.58}$  & 5.69$/ \textbf{24.46}$     \\ \hline
+12  & 2.85 $/ \textbf{4.38}$ & 4.14$/ \textbf{11.82}$ & 4.98$/ \textbf{16.23}$ & 5.54$/ \textbf{20.52}$ & 5.88$/ \textbf{22.21}$  & 6.56$/ \textbf{24.94}$      \\ \hline
+14  & 3.03 $/ \textbf{4.30}$ & 4.44$/ \textbf{11.16}$ & 5.39$/ \textbf{15.96}$ & 6.03$/ \textbf{18.03}$ & 6.65$/ \textbf{21.12}$  & 6.95$/ \textbf{23.41}$ \\ \hline
+16  & 2.94 $/ \textbf{3.99}$ & 4.92$/ \textbf{10.69}$ & 6.19$/ \textbf{14.64}$ & 6.76$/ \textbf{18.49}$ & 7.22$/ \textbf{20.10}$  & 8.23$/ \textbf{22.76}$     \\ \hline
+18  & 3.03 $/ \textbf{3.80}$ & 5.31$/ \textbf{10.20}$ & 6.52$/ \textbf{14.64}$ & 7.42$/ \textbf{16.08}$ & 7.62$/ \textbf{19.99}$  & 9.00$/ \textbf{22.04}$     \\ \hline
+20  & 2.88 $/ \textbf{3.75}$ & 4.95$/ \textbf{9.30}$ & 6.43$/ \textbf{12.66}$ & 7.42$/ \textbf{15.40}$ & 7.79$/ \textbf{18.11}$  & 8.65$/ \textbf{20.06}$      \\ \hline
+22  & 2.66 $/ \textbf{3.56}$ & 4.74$/ \textbf{8.55}$ & 6.32$/ \textbf{11.52}$ & 7.28$/ \textbf{14.78}$ & 7.97$/ \textbf{16.08}$  & 8.77$/ \textbf{19.92}$     \\ \hline
+24  & 2.41 $/ \textbf{3.30}$ & 4.47$/ \textbf{8.16}$ & 5.91$/ \textbf{10.99}$ & 6.74$/ \textbf{14.05}$ & 7.60$/ \textbf{15.77}$  & 8.53$/ \textbf{18.59}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{加速比(规则数量为40)}\label{table:labe7}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Speedup\;ratio$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 1.46 $/ \textbf{20.26}$ & 1.59 $/ \textbf{27.50}$ & 1.68$/ \textbf{30.65}$ & 1.85$/ \textbf{31.83}$ & 1.82$/ \textbf{32.08}$  & 1.87$/ \textbf{34.09}$      \\ \hline
+4   & 2.17 $/ \textbf{14.44}$ & 2.82 $/ \textbf{22.68}$ & 2.87$/ \textbf{26.37}$ & 3.06$/ \textbf{30.41}$ & 3.17$/ \textbf{32.40}$  & 3.38$/ \textbf{33.62}$ \\ \hline
+6   & 2.62 $/ \textbf{13.72}$ & 3.43 $/ \textbf{20.73}$ & 3.94$/ \textbf{26.39}$ & 4.22$/ \textbf{29.66}$ & 4.24$/ \textbf{31.87}$  & 4.62$/ \textbf{34.75}$      \\ \hline
+8   & 2.95 $/ \textbf{12.72}$ & 3.97 $/ \textbf{19.76}$ & 4.53$/ \textbf{20.01}$ & 4.86$/ \textbf{27.26}$ & 5.12$/ \textbf{30.18}$  & 5.46 $/ \textbf{33.28}$     \\ \hline
+10  & 3.34 $/ \textbf{11.56}$ & 4.49 $/ \textbf{18.12}$ & 5.29$/ \textbf{24.00}$ & 5.74$/ \textbf{27.25}$ & 5.95$/ \textbf{29.70}$  & 6.58$/ \textbf{32.34}$      \\ \hline
+12  & 3.72 $/ \textbf{11.05}$ & 5.22 $/ \textbf{18.99}$ & 5.99$/ \textbf{23.13}$ & 6.70$/ \textbf{26.73}$ & 6.82$/ \textbf{28.05}$  & 7.63$/ \textbf{31.73}$      \\ \hline
+14  & 4.16 $/ \textbf{10.99}$ & 5.88 $/ \textbf{17.86}$ & 7.04$/ \textbf{24.10}$ & 7.95$/ \textbf{26.42}$ & 8.11$/ \textbf{27.90}$  & 8.79$/ \textbf{31.82}$ \\ \hline
+16  & 4.83 $/ \textbf{9.95}$ & 6.41 $/ \textbf{17.19}$ & 7.58$/ \textbf{21.92}$ & 8.91$/ \textbf{26.12}$ & 9.18$/ \textbf{27.01}$  & 9.86$/ \textbf{31.48}$      \\ \hline
+18  & 4.83 $/ \textbf{9.24}$ & 7.09 $/ \textbf{16.73}$ & 8.60$/ \textbf{20.79}$ & 9.31$/ \textbf{23.46}$ & 10.32$/ \textbf{25.64}$ & 11.23$/ \textbf{28.97}$      \\ \hline
+20  & 4.65 $/ \textbf{9.07}$ & 7.12 $/ \textbf{15.40}$ & 8.61$/ \textbf{18.45}$ & 9.59$/ \textbf{21.48}$ & 10.29$/ \textbf{24.78}$ & 11.41$/ \textbf{27.76}$      \\ \hline
+22  & 4.83 $/ \textbf{8.51}$ & 7.14 $/ \textbf{14.44}$ & 8.49$/ \textbf{18.13}$ & 9.80$/ \textbf{21.44}$ & 10.58$/ \textbf{23.14}$ & 11.79$/ \textbf{26.15}$      \\ \hline
+24  & 4.65 $/ \textbf{8.13}$ & 6.88 $/ \textbf{14.26}$ & 8.39$/ \textbf{17.41}$ & 9.65$/ \textbf{21.22}$ & 10.67$/ \textbf{22.67}$ & 11.29$/ \textbf{25.84}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{加速比(规则数量为60)}\label{table:labe8}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Speedup\;ratio$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 1.52$/ \textbf{22.69}$  & 1.71$/ \textbf{27.15}$  & 1.82$/ \textbf{31.19}$ & 1.81 $/ \textbf{31.42}$& 1.81 $/ \textbf{32.34}$ & 1.82$/ \textbf{33.25}$      \\ \hline
+4   & 2.50$/ \textbf{19.07}$  & 2.92$/ \textbf{25.70}$  & 3.08$/ \textbf{30.20}$ & 3.27 $/ \textbf{34.90}$& 3.27 $/ \textbf{34.71}$ & 3.35$/ \textbf{36.22}$ \\ \hline
+6   & 3.15$/ \textbf{16.54}$  & 3.86$/ \textbf{25.21}$  & 4.22$/ \textbf{30.02}$ & 4.29 $/ \textbf{31.97}$& 4.31 $/ \textbf{34.31}$ & 4.46$/ \textbf{36.39}$      \\ \hline
+8   & 3.49$/ \textbf{15.47}$  & 4.51$/ \textbf{24.27}$  & 5.11$/ \textbf{27.56}$ & 5.13 $/ \textbf{31.09}$& 5.17 $/ \textbf{32.73}$ & 5.40$/ \textbf{36.31}$      \\ \hline
+10  & 3.96$/ \textbf{14.74}$  & 5.30$/ \textbf{22.27}$  & 5.83$/ \textbf{25.86}$ & 6.26 $/ \textbf{29.69}$& 6.30 $/ \textbf{30.18}$ & 6.58$/ \textbf{34.06}$      \\ \hline
+12  & 4.53$/ \textbf{15.11}$  & 5.91$/ \textbf{21.69}$  & 6.85$/ \textbf{25.53}$ & 7.38 $/ \textbf{29.32}$& 7.46 $/ \textbf{30.89}$ & 7.55$/ \textbf{33.09}$      \\ \hline
+14  & 5.16$/ \textbf{14.23}$  & 6.96$/ \textbf{21.71}$  & 7.89$/ \textbf{25.47}$ & 8.61 $/ \textbf{28.78}$& 8.86 $/ \textbf{31.02}$ & 9.22$/ \textbf{32.35}$ \\ \hline
+16  & 5.58$/ \textbf{12.97}$  & 7.37$/ \textbf{20.10}$  & 8.66$/ \textbf{24.75}$ & 9.30 $/ \textbf{28.52}$& 9.44 $/ \textbf{29.33}$ & 9.84$/ \textbf{32.13}$      \\ \hline
+18  & 6.30$/ \textbf{12.79}$  & 8.16$/ \textbf{20.09}$  & 9.93$/ \textbf{24.37}$ & 10.48$/ \textbf{26.94}$& 10.60 $/ \textbf{29.28}$&11.14$/ \textbf{30.91}$      \\ \hline
+20  & 6.08$/ \textbf{12.02}$  & 8.69$/ \textbf{17.60}$  & 10.02$/ \textbf{22.23}$& 10.76$/ \textbf{25.29}$& 11.49 $/ \textbf{28.58}$& 11.59$/ \textbf{29.65}$      \\ \hline
+22  & 5.91$/ \textbf{11.20}$  & 8.47$/ \textbf{16.94}$  & 10.15$/ \textbf{22.78}$& 11.74$/ \textbf{25.51}$& 11.60 $/ \textbf{27.26}$& 12.17 $/ \textbf{29.48}$     \\ \hline
+24  & 5.90$/ \textbf{10.59}$  & 8.62$/ \textbf{16.42}$  & 10.17$/ \textbf{20.73}$& 11.39$/ \textbf{24.15}$& 11.80$/ \textbf{26.49}$ & 12.37$/ \textbf{27.91}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{加速比(规则数量为80)}\label{table:labe9}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Speedup\;ratio$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 1.56$/ \textbf{22.70}$  & 1.68$/ \textbf{29.92}$  & 1.78$/ \textbf{28.17}$ & 1.81$/ \textbf{31.05}$ & 1.82$/ \textbf{30.81}$  & 1.82$/ \textbf{31.37}$      \\ \hline
+4   & 2.60$/ \textbf{19.95}$  & 2.90$/ \textbf{28.29}$  & 3.17$/ \textbf{31.02}$ & 3.33$/ \textbf{32.83}$ & 3.38$/ \textbf{35.36}$  & 3.38$/ \textbf{36.34}$ \\ \hline
+6   & 3.29$/ \textbf{19.38}$  & 3.76$/ \textbf{26.83}$  & 3.98$/ \textbf{31.31}$ & 4.28$/ \textbf{33.81}$ & 4.43$/ \textbf{35.22}$  & 4.42 $/ \textbf{38.02}$     \\ \hline
+8   & 3.70$/ \textbf{18.48}$  & 4.46$/ \textbf{26.47}$  & 5.01$/ \textbf{29.91}$ & 5.22$/ \textbf{32.29}$ & 5.42$/ \textbf{35.23}$  & 5.45$/ \textbf{39.40}$   \\ \hline
+10  & 4.24$/ \textbf{17.65}$  & 5.49$/ \textbf{23.57}$  & 6.03$/ \textbf{27.53}$ & 6.51$/ \textbf{30.20}$ & 6.65$/ \textbf{32.09}$  & 6.71$/ \textbf{}$ $/ \textbf{34.56}$     \\ \hline
+12  & 4.83$/ \textbf{16.72}$  & 6.19$/ \textbf{24.58}$  & 7.01$/ \textbf{28.10}$ & 7.56$/ \textbf{29.60}$ & 7.66$/ \textbf{31.98}$  & 8.06$/ \textbf{33.64}$      \\ \hline
+14  & 5.32$/ \textbf{16.31}$  & 7.27$/ \textbf{23.88}$  & 8.23$/ \textbf{27.73}$ & 8.62$/ \textbf{30.01}$ & 8.82$/ \textbf{31.35}$  & 9.01$/ \textbf{33.49}$ \\ \hline
+16  & 5.91$/ \textbf{15.16}$  & 8.19$/ \textbf{23.24}$  & 9.35$/ \textbf{26.95}$  & 10.11$/ \textbf{29.98}$ & 10.35$/ \textbf{32.26}$  & 10.60   $/ \textbf{33.26}$   \\ \hline
+18  & 6.48$/ \textbf{14.48}$  & 9.10$/ \textbf{21.76}$  & 10.32$/ \textbf{26.14}$ & 10.71$/ \textbf{28.65}$ & 11.18$/ \textbf{30.48}$  & 11.52   $/ \textbf{33.46}$   \\ \hline
+20  & 6.79$/ \textbf{14.20}$  & 9.37$/ \textbf{20.18}$  & 10.44$/ \textbf{24.32}$ & 11.55$/ \textbf{27.12}$ & 11.91$/ \textbf{29.96}$  & 12.34   $/ \textbf{32.22}$   \\ \hline
+22  & 6.83$/ \textbf{14.01}$  & 9.47$/ \textbf{20.29}$  & 10.62$/ \textbf{23.57}$ & 12.12$/ \textbf{28.36}$ & 12.38$/ \textbf{29.54}$  & 12.53   $/ \textbf{31.67}$   \\ \hline
+24  & 6.44$/ \textbf{12.71}$  & 9.23$/ \textbf{19.04}$  & 10.88$/ \textbf{22.72}$ & 11.78$/ \textbf{26.89}$ & 12.28$/ \textbf{29.06}$  & 12.80 $/ \textbf{31.42}$\\ \hline
+\end{longtable}
+\end{center}
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同线程数量下训练二型Mamdani 模糊逻辑系统的并行时间(规则数量为20)}\label{table:labe2}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 16.81 $/ \textbf{3.82}$ & 27.13 $/ \textbf{2.41}$ & 37.27 $/ \textbf{2.40}$ & 47.38$/ \textbf{2.99}$ & 58.51 $/ \textbf{3.55}$ & 67.43   $/ \textbf{3.87}$   \\ \hline
+4   & 11.87 $/ \textbf{4.01}$ & 17.62 $/ \textbf{2.69}$ & 22.36 $/ \textbf{3.00}$& 28.27 $/ \textbf{3.55}$& 32.78 $/ \textbf{3.70}$ & 38.54 $/ \textbf{4.09}$ \\ \hline
+6   & 10.17 $/ \textbf{4.42}$& 14.54 $/ \textbf{2.86}$ & 18.02$/ \textbf{3.28}$ & 22.39$/ \textbf{3.53}$ & 25.96 $/ \textbf{3.83}$ & 28.99 $/ \textbf{4.33}$   \\ \hline
+8   & 9.18 $/ \textbf{4.31}$ & 12.88 $/ \textbf{2.93}$ & 15.88$/ \textbf{3.31}$ & 19.23$/ \textbf{3.79}$ & 21.98 $/ \textbf{4.09}$  & 25.13 $/ \textbf{4.38}$     \\ \hline
+10  & 8.16 $/ \textbf{4.41}$ & 11.21$/ \textbf{3.08}$  & 13.43$/ \textbf{3.33}$ & 15.75$/ \textbf{4.08}$ & 18.26$/ \textbf{4.20}$  & 20.44 $/ \textbf{4.74}$     \\ \hline
+12  & 6.64 $/ \textbf{4.34}$ & 9.54 $/ \textbf{3.18}$  & 12.18 $/ \textbf{3.52}$ & 14.04$/ \textbf{3.76}$ & 16.31$/ \textbf{4.27}$  & 17.71  $/ \textbf{4.64}$    \\ \hline
+14  & 6.25 $/ \textbf{4.42}$ & 8.88 $/ \textbf{3.36}$  & 11.24$/ \textbf{3.58}$ & 12.91$/ \textbf{4.28}$ & 14.43 $/ \textbf{4.49}$ & 16.74$/ \textbf{4.95}$ \\ \hline
+16  & 6.44 $/ \textbf{4.77}$ & 8.03 $/ \textbf{3.51}$  & 9.79 $/ \textbf{3.90}$ & 11.50 $/ \textbf{4.17}$& 13.28 $/ \textbf{4.72}$ & 14.12  $/ \textbf{5.09}$    \\ \hline
+18  & 6.26$/ \textbf{5.01}$  & 7.43  $/ \textbf{3.68}$ & 9.29 $/ \textbf{3.90}$ & 10.50 $/ \textbf{4.79}$& 12.58 $/ \textbf{4.74}$ & 12.93  $/ \textbf{5.25}$    \\ \hline
+20  & 6.58 $/ \textbf{5.07}$ & 7.98 $/ \textbf{4.04}$  & 9.42  $/ \textbf{4.52}$& 10.50$/ \textbf{5.01}$ & 12.31 $/ \textbf{5.24}$ & 13.45  $/ \textbf{5.77}$    \\ \hline
+22  & 7.13 $/ \textbf{5.35}$ & 8.83  $/ \textbf{4.40}$ & 9.59 $/ \textbf{4.96}$ & 10.07$/ \textbf{5.22}$ & 12.04$/ \textbf{5.90}$  & 13.30   $/ \textbf{5.82}$   \\ \hline
+24  & 7.85 $/ \textbf{5.76}$ & 8.84  $/ \textbf{4.60}$ & 10.26$/ \textbf{5.20}$ & 11.55 $/ \textbf{5.49}$&  12.62 $/ \textbf{6.01}$& 13.63 $/ \textbf{6.24}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同线程数量下训练二型Mamdani 模糊逻辑系统的并行时间(规则数量为40)}\label{table:labe3}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 25.39$/ \textbf{1.80}$ & 45.92 $/ \textbf{2.68}$ & 64.77$/ \textbf{3.55}$ & 79.01$/ \textbf{4.55}$ & 98.83$/ \textbf{5.63}$  & 119.55 $/ \textbf{6.51}$     \\ \hline
+4   & 17.05$/ \textbf{2.53}$ & 25.90 $/ \textbf{3.25}$ & 38.02$/ \textbf{4.13}$ & 47.85$/ \textbf{7.76}$ & 56.82$/ \textbf{5.57}$  & 66.38$/ \textbf{6.59}$ \\ \hline
+6   & 14.11$/ \textbf{2.66}$ & 21.33 $/ \textbf{3.56}$ & 27.73$/ \textbf{4.13}$ & 34.67$/ \textbf{4.88}$ & 42.49$/ \textbf{5.67}$  & 48.68 $/ \textbf{6.38}$     \\ \hline
+8   & 12.56$/ \textbf{2.87}$ & 18.41 $/ \textbf{3.73}$ & 24.13$/ \textbf{4.54}$ & 30.15$/ \textbf{5.31}$ & 35.13$/ \textbf{5.99}$  & 41.13 $/ \textbf{6.66}$     \\ \hline
+10  & 11.07$/ \textbf{3.17}$ & 16.27 $/ \textbf{4.08}$ & 20.64$/ \textbf{4.54}$ & 25.52$/ \textbf{5.31}$ & 30.27$/ \textbf{6.08}$  & 34.10  $/ \textbf{6.86}$    \\ \hline
+12  & 9.95 $/ \textbf{3.31}$ & 14.01 $/ \textbf{3.89}$ & 18.21$/ \textbf{4.71}$ & 21.89$/ \textbf{5.41}$ & 26.40$/ \textbf{6.44}$  & 29.44  $/ \textbf{6.98}$    \\ \hline
+14  & 8.91 $/ \textbf{3.33}$ & 12.43 $/ \textbf{4.14}$ & 15.51$/ \textbf{4.52}$ & 18.44$/ \textbf{5.48}$ & 22.20$/ \textbf{6.48}$  & 25.55 $/ \textbf{6.97}$ \\ \hline
+16  & 7.67 $/ \textbf{3.67}$ & 11.41 $/ \textbf{4.29}$ & 14.40$/ \textbf{4.97}$ & 16.44$/ \textbf{5.54}$ & 19.61$/ \textbf{6.69}$  & 22.78  $/ \textbf{7.05}$    \\ \hline
+18  & 7.67 $/ \textbf{3.96}$ & 10.31 $/ \textbf{4.41}$ & 12.69$/ \textbf{5.24}$ & 15.75$/ \textbf{6.17}$ & 17.45$/ \textbf{7.05}$  & 20.01 $/ \textbf{7.65}$     \\ \hline
+20  & 7.96 $/ \textbf{4.03}$ & 10.27 $/ \textbf{4.79}$ & 12.68$/ \textbf{5.90}$ & 15.28$/ \textbf{6.74}$ & 17.51$/ \textbf{7.29}$  & 19.68  $/ \textbf{7.99}$    \\ \hline
+22  & 7.67 $/ \textbf{4.29}$ & 10.24 $/ \textbf{5.11}$ & 12.85$/ \textbf{6.01}$ & 14.96$/ \textbf{6.75}$ & 17.02$/ \textbf{7.81}$  & 19.05  $/ \textbf{8.48}$    \\ \hline
+24  & 7.97 $/ \textbf{4.50}$ & 10.63 $/ \textbf{5.18}$ & 13.01$/ \textbf{6.26}$ & 15.19$/ \textbf{6.82}$ & 16.88$/ \textbf{7.97}$  & 19.90 $/ \textbf{8.58}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同线程数量下训练二型Mamdani 模糊逻辑系统的并行时间(规则数量为60)}\label{table:labe4}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 36.01$/ \textbf{2.37}$ & 62.59 $/ \textbf{3.94}$ & 88.63$/ \textbf{5.12}$ & 117.59$/ \textbf{6.88}$& 143.15 $/ \textbf{8.39}$& 171.14  $/ \textbf{9.75}$    \\ \hline
+4   & 21.85$/ \textbf{2.81}$ & 36.75 $/ \textbf{4.17}$ & 52.51$/ \textbf{5.29}$ & 65.35 $/ \textbf{6.20}$& 79.57  $/ \textbf{7.81}$& 92.73   $/ \textbf{8.95}$ \\ \hline
+6   & 17.34$/ \textbf{3.25}$ & 27.85 $/ \textbf{4.25}$ & 38.35$/ \textbf{5.32}$ & 49.74 $/ \textbf{6.76}$& 60.38  $/ \textbf{7.90}$& 69.67   $/ \textbf{8.91}$   \\ \hline
+8   & 15.69$/ \textbf{3.47}$ & 23.86 $/ \textbf{4.41}$ & 31.70$/ \textbf{5.80}$ & 41.65 $/ \textbf{6.95}$& 50.30  $/ \textbf{8.29}$& 57.53   $/ \textbf{8.93}$   \\ \hline
+10  & 13.82$/ \textbf{3.64}$ & 20.27 $/ \textbf{4.81}$ & 27.77$/ \textbf{6.18}$ & 34.13 $/ \textbf{7.28}$& 41.27  $/ \textbf{8.43}$& 47.20   $/ \textbf{9.52}$   \\ \hline
+12  & 12.08$/ \textbf{3.55}$ & 18.19 $/ \textbf{4.94}$ & 23.64$/ \textbf{6.26}$ & 28.94 $/ \textbf{7.37}$& 34.87  $/ \textbf{8.78}$& 41.15   $/ \textbf{9.79}$   \\ \hline
+14  & 10.61$/ \textbf{3.77}$ & 15.45 $/ \textbf{4.93}$ & 20.51$/ \textbf{6.27}$ & 24.81 $/ \textbf{7.51}$& 29.38  $/ \textbf{8.74}$& 33.67   $/ \textbf{10.02}$ \\ \hline
+16  & 9.81 $/ \textbf{4.14}$ & 14.57 $/ \textbf{5.33}$ & 18.70$/ \textbf{6.46}$ & 22.96 $/ \textbf{7.58}$& 27.58 $/ \textbf{9.25}$ & 31.56    $/ \textbf{10.09}$  \\ \hline
+18  & 8.70 $/ \textbf{4.20}$ & 13.18 $/ \textbf{5.34}$ & 16.31$/ \textbf{6.56}$ & 20.37 $/ \textbf{8.03}$& 24.55 $/ \textbf{9.26}$ & 27.89   $/ \textbf{10.49}$   \\ \hline
+20  & 9.01 $/ \textbf{4.47}$ & 12.37 $/ \textbf{6.08}$ & 16.17$/ \textbf{7.19}$ & 19.85 $/ \textbf{8.55}$& 22.65 $/ \textbf{9.49}$ & 26.80    $/ \textbf{10.93}$  \\ \hline
+22  & 9.27 $/ \textbf{4.97}$ & 12.69 $/ \textbf{6.32}$ & 15.96$/ \textbf{7.02}$ & 18.19 $/ \textbf{8.48}$& 22.44 $/ \textbf{9.95}$ & 25.53    $/ \textbf{11.00}$  \\ \hline
+24  & 9.28 $/ \textbf{5.07}$ & 12.47 $/ \textbf{6.52}$ & 15.93$/ \textbf{7.71}$ & 18.75 $/ \textbf{8.95}$&  22.05 $/ \textbf{10.24}$& 25.11   $/ \textbf{11.61}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{不同线程数量下训练二型Mamdani 模糊逻辑系统的并行时间(规则数量为80)}\label{table:labe5}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm time(s)$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & 44.02$/ \textbf{3.20}$ & 82.07$/ \textbf{4.80}$  & 114.83$/ \textbf{7.57}$& 150.66$/ \textbf{9.17}$& 189.40$/ \textbf{11.71}$ &225.27  $/ \textbf{13.80}$   \\ \hline
+4   & 26.46$/ \textbf{3.64}$ & 47.40$/ \textbf{5.08}$  & 64.41 $/ \textbf{6.87}$& 82.29 $/ \textbf{8.67}$& 101.54$/ \textbf{10.20}$ & 121.64   $/ \textbf{11.91}$  \\ \hline
+6   & 20.92$/ \textbf{3.75}$ & 36.62$/ \textbf{5.35}$  & 51.42 $/ \textbf{6.81}$& 63.99 $/ \textbf{8.42}$& 77.50 $/ \textbf{10.24}$ & 92.89    $/ \textbf{11.38}$  \\ \hline
+8   & 18.61$/ \textbf{3.93}$ & 29.69$/ \textbf{5.43}$  & 40.87 $/ \textbf{6.81}$& 52.47 $/ \textbf{8.42}$& 63.33 $/ \textbf{10.24}$ & 75.37    $/ \textbf{11.38}$  \\ \hline
+10  & 16.23$/ \textbf{4.12}$ & 25.11$/ \textbf{6.09}$  & 33.95 $/ \textbf{7.74}$& 42.07 $/ \textbf{9.43}$& 51.64 $/ \textbf{11.24}$ & 61.22    $/ \textbf{12.53}$  \\ \hline
+12  & 14.23$/ \textbf{4.34}$ & 22.26$/ \textbf{5.84}$  & 29.20 $/ \textbf{7.59}$& 36.24 $/ \textbf{9.62}$& 44.86 $/ \textbf{11.28}$ & 50.95    $/ \textbf{12.87}$  \\ \hline
+14  & 12.93$/ \textbf{4.45}$ & 18.94$/ \textbf{6.02}$  & 24.87 $/ \textbf{7.69}$& 31.80 $/ \textbf{9.49}$& 38.95 $/ \textbf{11.50}$ & 45.60    $/ \textbf{12.96}$   \\ \hline
+16  & 11.65$/ \textbf{4.79}$ & 16.81$/ \textbf{6.18}$  & 21.89 $/ \textbf{7.91}$& 27.09 $/ \textbf{9.50}$& 33.21 $/ \textbf{11.18}$ & 38.75    $/ \textbf{13.01}$  \\ \hline
+18  & 10.62$/ \textbf{5.02}$ & 15.14$/ \textbf{6.60}$  & 19.83 $/ \textbf{8.15}$& 25.57 $/ \textbf{9.94}$& 30.74 $/ \textbf{11.83}$ & 35.65    $/ \textbf{12.93}$  \\ \hline
+20  & 10.14$/ \textbf{5.12}$ & 14.70$/ \textbf{7.12}$  & 19.60 $/ \textbf{8.76}$& 23.71 $/ \textbf{10.50}$& 28.84 $/ \textbf{12.04}$ & 33.28    $/ \textbf{13.43}$ \\ \hline
+22  & 10.07$/ \textbf{5.19}$ & 14.55$/ \textbf{7.08}$  & 19.27 $/ \textbf{9.04}$& 22.60 $/ \textbf{10.04}$& 27.75 $/ \textbf{12.21}$ & 32.77    $/ \textbf{13.67}$ \\ \hline
+24  & 10.69$/ \textbf{5.72}$ & 14.92$/ \textbf{5.54}$  & 18.82 $/ \textbf{9.38}$& 23.25 $/ \textbf{10.59}$& 27.98 $/ \textbf{12.41}$& 32.09    $/ \textbf{15.43}$ \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+
+
+
+\begin{center}
+
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{并行效率(规则数量为20)}\label{table:labe10}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Parallel\;efficiency$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   & \tabincell{c}{56.45\%\\ $/ \textbf{249.33\%}$} & \tabincell{c}{72.86\%\\ $/ \textbf{777.77\%}$ } &\tabincell{c}{ 81.37\%\\ $/ \textbf{1191.08\%}$ }&\tabincell{c}{ 82.22\%\\ $/ \textbf{1290.26\%}$ }&\tabincell{c}{ 82.00\%\\ $/ \textbf{1335.06\%}$  }&\tabincell{c}{ 86.29\%\\ $/ \textbf{1495.32\%}$ }\\   \hline
+4   &\tabincell{c}{ 39.98\%\\ $/ \textbf{118.93\%}$ }& \tabincell{c}{ 56.10\%\\ $/ \textbf{349.54\%}$  }&\tabincell{c}{ 67.81\% \\ $/ \textbf{476.12\%}$} &\tabincell{c}{ 68.90\% \\ $/ \textbf{543.27\%}$ } &\tabincell{c}{ 73.18\%\\ $/ \textbf{640.57\%}$} & \tabincell{c}{ 75.47\%\\ $/ \textbf{707.34\%}$ }   \\ \hline
+6   & \tabincell{c}{31.11\% \\ $/ \textbf{71.82\%}$ }&\tabincell{c}{ 45.31\%\\ $/ \textbf{218.50\%}$ } &\tabincell{c}{ 56.09\%\\ $/ \textbf{290.21\%}$ }&\tabincell{c}{ 57.98\%\\ $/ \textbf{364.09\%}$ }&\tabincell{c}{ 61.59\%\\ $/ \textbf{412.89\%}$ }&\tabincell{c}{ 66.91\%\\  $/ \textbf{445.94\%}$ }  \\ \hline
+8   & \tabincell{c}{25.86\%\\ $/ \textbf{55.30\%}$ }&\tabincell{c}{ 38.37\%\\ $/ \textbf{160.20\%}$ } &\tabincell{c}{ 47.75\%\\ $/ \textbf{215.86\%}$ }&\tabincell{c}{ 50.66 \%\\ $/ \textbf{254.63\%}$}&\tabincell{c}{ 54.56\%\\ $/ \textbf{290.00\%}$} &\tabincell{c}{ 57.88 \%\\  $/ \textbf{330.65\%}$ } \\ \hline
+10  & \tabincell{c}{23.26\%\\ $/ \textbf{43.17\%}$ }&\tabincell{c}{ 35.27\%\\ $/ \textbf{121.92\%}$ } & \tabincell{c}{45.17\%\\ $/ \textbf{171.66\%}$ }&\tabincell{c}{ 49.46\%\\ $/ \textbf{189.15\%}$ }&\tabincell{c}{ 52.53\%\\ $/ \textbf{225.87\%}$ }&\tabincell{c}{ 56.93 \%\\  $/ \textbf{244.60\%}$}   \\ \hline
+12  & \tabincell{c}{23.80\%\\ $/ \textbf{36.57\%}$} &\tabincell{c}{ 34.53\%\\ $/ \textbf{98.51\%}$ } &\tabincell{c}{ 41.48\%\\ $/ \textbf{135.25\%}$ }&\tabincell{c}{ 46.24 \%\\ $/ \textbf{171.07\%}$}&\tabincell{c}{ 49.03\%\\ $/ \textbf{185.10\%}$} &\tabincell{c}{ 54.74 \% \\ $/ \textbf{207.87\%}$  } \\ \hline
+14  & \tabincell{c}{21.68\%\\ $/ \textbf{30.78\%}$} &\tabincell{c}{ 31.77 \%\\ $/ \textbf{79.76\%}$ } &\tabincell{c}{ 38.53\%\\ $/ \textbf{114.02\%}$ }&\tabincell{c}{ 43.10\%\\  $/ \textbf{128.84\%}$}&\tabincell{c}{ 47.51\%\\ $/ \textbf{150.91\%}$ }&\tabincell{c}{ 49.65\%\\  $/ \textbf{167.26\%}$ } \\ \hline
+16  & \tabincell{c}{18.42\%\\ $/ \textbf{24.94\%}$ }&\tabincell{c}{ 30.78\%\\ $/ \textbf{66.85\%}$}& \tabincell{c}{ 38.73\%\\ $/ \textbf{91.50\%}$ }& \tabincell{c}{42.31 \%\\ $/ \textbf{115.62\%}$}& \tabincell{c}{45.14\%\\ $/ \textbf{125.63\%}$} & \tabincell{c}{51.50\%\\   $/ \textbf{142.29\%}$ }  \\ \hline
+18  & \tabincell{c}{16.84\%\\ $/ \textbf{21.13\%}$} &\tabincell{c}{ 29.55\%\\ $/ \textbf{56.69\%}$}  & \tabincell{c}{36.25\%\\ $/ \textbf{81.38\%}$ }&\tabincell{c}{ 41.22\%\\ $/ \textbf{89.37\%}$} & \tabincell{c}{42.39\%\\ $/ \textbf{111.08\%}$} &\tabincell{c}{50.01\% \\  $/ \textbf{122.47\%}$ }  \\ \hline
+20  & \tabincell{c}{14.42\%\\ $/ \textbf{18.80\%}$ }&\tabincell{c}{ 24.76\%\\ $/ \textbf{46.50\%}$ } &\tabincell{c}{ 32.20\%\\ $/ \textbf{63.30\%}$ }&\tabincell{c}{ 37.10\%\\ $/ \textbf{77.04\%}$ }& \tabincell{c}{38.96\%\\ $/ \textbf{90.59\%}$ }&\tabincell{c}{ 43.27\%\\  $/ \textbf{100.33\%}$ }   \\ \hline
+22  & \tabincell{c}{12.10\%\\ $/ \textbf{16.20\%}$} &\tabincell{c}{ 21.57 \%\\ $/ \textbf{38.86\%}$} & \tabincell{c}{28.73\%\\ $/ \textbf{52.39\%}$} &\tabincell{c}{ 33.09\%\\ $/ \textbf{67.19\%}$}&\tabincell{c}{ 36.23\%\\ $/ \textbf{73.11\%}$} &\tabincell{c}{ 39.89 \%\\ $/ \textbf{90.55\%}$ }   \\ \hline
+24  & \tabincell{c}{10.08\%\\ $/ \textbf{13.78\%}$} &\tabincell{c}{ 18.63 \%\\ $/ \textbf{34.03\%}$} & \tabincell{c}{24.63\%\\ $/ \textbf{45.82\%}$} &\tabincell{c}{ 28.10\%\\ $/ \textbf{58.58\%}$}&\tabincell{c}{ 31.67\%\\ $/ \textbf{65.74\%}$} &\tabincell{c}{ 35.56\%\\  $/ \textbf{77.48\%}$}   \\ \hline
+\end{longtable}
+
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{并行效率(规则数量为40)}\label{table:labe11}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Parallel\;efficiency$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   &\tabincell{c}{  73.00\%\\ $/ \textbf{1013.49\%}$}&\tabincell{c}{ 79.66\%\\  $/ \textbf{1375.42\%}$}&\tabincell{c}{  84.32\%\\ $/ \textbf{1532.53\%}$}&\tabincell{c}{ 92.81\%\\ $/ \textbf{1591.51\%}$}&\tabincell{c}{ 91.15\%\\ $/ \textbf{1604.49\%}$ }&\tabincell{c}{ 93.97\%\\ $/ \textbf{1704.98\%}$ } \\ \hline
+4   &\tabincell{c}{ 54.36 \%\\ $/ \textbf{361.15\%}$}&\tabincell{c}{ 70.62 \%\\ $/ \textbf{567.06\%}$}&\tabincell{c}{ 71.83 \%\\ $/ \textbf{659.28\%}$}&\tabincell{c}{ 76.61\%\\ $/ \textbf{760.36\%}$}&\tabincell{c}{ 79.27 \%\\ $/ \textbf{810.15\%}$} &\tabincell{c}{ 84.62\%\\ $/ \textbf{840.70\%}$}  \\ \hline
+6   &\tabincell{c}{ 43.81\%\\  $/ \textbf{228.80\%}$}&\tabincell{c}{ 57.17 \%\\ $/ \textbf{345.64\%}$}&\tabincell{c}{ 65.67 \%\\ $/ \textbf{439.94\%}$}&\tabincell{c}{ 70.49 \%\\ $/ \textbf{494.48\%}$}&\tabincell{c}{ 70.67\%\\ $/ \textbf{531.26\%}$ } &\tabincell{c}{ 76.93\%\\ $/ \textbf{579.21\%}$ }  \\ \hline
+8   &\tabincell{c}{ 36.91\%\\  $/ \textbf{159.03\%}$}&\tabincell{c}{ 49.68\%\\  $/ \textbf{247.11\%}$}&\tabincell{c}{ 56.59\%\\  $/ \textbf{300.11\%}$}&\tabincell{c}{ 60.80\%\\ $/ \textbf{340.77\%}$}&\tabincell{c}{ 64.10\%\\ $/ \textbf{377.33\%}$} &\tabincell{c}{ 68.28 \%\\ $/ \textbf{416.06\%}$} \\ \hline
+10  &\tabincell{c}{ 33.48\%\\  $/ \textbf{115.67\%}$}&\tabincell{c}{ 44.97 \%\\ $/ \textbf{181.24\%}$}&\tabincell{c}{ 52.93\%\\  $/ \textbf{240.00\%}$}&\tabincell{c}{ 57.44\%\\ $/ \textbf{272.56\%}$}&\tabincell{c}{ 59.52\%\\ $/ \textbf{297.09\%}$}  &\tabincell{c}{ 65.88\%\\  $/ \textbf{323.40\%}$ }\\ \hline
+12  &\tabincell{c}{ 31.05\%\\  $/ \textbf{92.12\%}$}&\tabincell{c}{ 43.51\%\\  $/ \textbf{159.23\%}$}&\tabincell{c}{ 49.99 \%\\ $/ \textbf{192.74\%}$}&\tabincell{c}{ 55.83\%\\ $/ \textbf{222.81\%}$}&\tabincell{c}{  56.87\%\\ $/ \textbf{233.81\%}$} &\tabincell{c}{ 63.58 \%\\ $/ \textbf{264.50\%}$} \\ \hline
+14  &\tabincell{c}{29.72\%\\  $/ \textbf{78.55\%}$}&\tabincell{c}{42.06 \%\\ $/ \textbf{127.58\%}$}&\tabincell{c}{50.51\%\\  $/ \textbf{172.17\%}$}&\tabincell{c}{56.79 \%\\ $/ \textbf{188.73\%}$}&\tabincell{c}{57.97\%\\ $/ \textbf{199.30\%}$ } &\tabincell{c}{62.80\%\\ $/ \textbf{227.29\%}$}  \\ \hline
+16  &\tabincell{c}{30.21\% \\ $/ \textbf{62.24\%}$}&\tabincell{c}{40.09\%\\  $/ \textbf{107.48\%}$}&\tabincell{c}{47.41\%\\  $/ \textbf{137.02\%}$}&\tabincell{c}{55.74\%\\ $/ \textbf{163.29\%}$}&\tabincell{c}{ 57.41\%\\ $/ \textbf{168.87\%}$} &\tabincell{c}{ 61.64\%\\ $/ \textbf{196.76\%}$ } \\ \hline
+18  &\tabincell{c}{26.86\%\\  $/ \textbf{51.35\%}$}&\tabincell{c}{39.43\%\\  $/ \textbf{92.96\%}$}&\tabincell{c}{47.80\%\\  $/ \textbf{115.53\%}$}&\tabincell{c}{51.73\%\\ $/ \textbf{130.37\%}$}&\tabincell{c}{57.34 \%\\ $/ \textbf{142.47\%}$} &\tabincell{c}{62.36 \%\\ $/ \textbf{160.96\%}$ }   \\ \hline
+20  &\tabincell{c}{23.28\%\\  $/ \textbf{45.35\%}$}&\tabincell{c}{35.61\%\\  $/ \textbf{77.05\%}$}&\tabincell{c}{43.07\%\\  $/ \textbf{92.29\%}$}&\tabincell{c}{47.98\%\\ $/ \textbf{107.42\%}$}&\tabincell{c}{51.43 \%\\ $/ \textbf{123.90\%}$} &\tabincell{c}{57.06 \%\\ $/ \textbf{138.78\%}$ }   \\ \hline
+22  &\tabincell{c}{21.96\% \\ $/ \textbf{0.3872\%}$}&\tabincell{c}{32.47\% \\ $/ \textbf{65.65\%}$}&\tabincell{c}{38.63\%\\  $/ \textbf{82.42\%}$}&\tabincell{c}{44.55\%\\ $/ \textbf{97.46\%}$}&\tabincell{c}{48.12\%\\ $/ \textbf{105.21\%}$ } &\tabincell{c}{53.59 \%\\ $/ \textbf{118.88\%}$ }   \\ \hline
+24  &\tabincell{c}{19.39\% \\ $/ \textbf{33.89\%}$}&\tabincell{c}{28.68\%\\  $/ \textbf{59.43\%}$}&\tabincell{c}{34.99\%\\  $/ \textbf{72.57\%}$}&\tabincell{c}{40.23\%\\ $/ \textbf{88.43\%}$}&\tabincell{c}{44.46\%\\ $/ \textbf{94.48\%}$ } &\tabincell{c}{ 47.05\%\\ $/ \textbf{107.70\%}$ } \\ \hline
+\end{longtable}
+\end{center}
+
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{并行效率(规则数量为60)}\label{table:labe12}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Parallel\;efficiency$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   &\tabincell{c}{76.09\%\\ $/ \textbf{1134.58\%}$}&\tabincell{c}{85.91\%\\  $/ \textbf{1357.91\%}$}&\tabincell{c}{91.38\%\\  $/ \textbf{15559.77\%}$}&\tabincell{c}{ 90.88\%\\ $/ \textbf{1571.42\%}$}&\tabincell{c}{ 90.95\%\\ $/ \textbf{1617.47\%}$ }&\tabincell{c}{90.80 \%\\ $/ \textbf{1662.79\%}$ } \\ \hline
+4   &\tabincell{c}{62.70\%\\ $/ \textbf{476.89\%}$}&\tabincell{c}{73.16\%\\  $/ \textbf{642.59\%}$}&\tabincell{c}{77.13\%\\  $/ \textbf{755.04\%}$}&\tabincell{c}{81.76\%\\ $/ \textbf{872.57\%}$}&\tabincell{c}{81.80\%\\ $/ \textbf{867.83\%}$  }&\tabincell{c}{83.79\%\\  $/ \textbf{905.66\%}$ } \\ \hline
+6   &\tabincell{c}{52.65\%\\ $/ \textbf{275.70\%}$}&\tabincell{c}{64.35\%\\  $/ \textbf{420.21\%}$}&\tabincell{c}{70.41\%\\  $/ \textbf{500.45\%}$}&\tabincell{c}{71.60\%\\ $/ \textbf{532.94\%}$}&\tabincell{c}{71.87 \%\\ $/ \textbf{571.97\%}$ }&\tabincell{c}{74.34 \%\\ $/ \textbf{606.53\%}$ } \\ \hline
+8   &\tabincell{c}{43.65\%\\ $/ \textbf{193.37\%}$}&\tabincell{c}{56.34 \%\\ $/ \textbf{303.41\%}$}&\tabincell{c}{ 63.89\%\\ $/ \textbf{344.46\%}$}&\tabincell{c}{64.13\%\\ $/ \textbf{388.71\%}$}&\tabincell{c}{64.71 \%\\ $/ \textbf{409.18\%}$ }&\tabincell{c}{67.53\%\\  $/ \textbf{453.93\%}$ } \\ \hline
+10  &\tabincell{c}{39.64\%\\ $/ \textbf{147.47\%}$}&\tabincell{c}{53.06 \%\\ $/ \textbf{222.78\%}$}&\tabincell{c}{58.34 \%\\ $/ \textbf{258.60\%}$}&\tabincell{c}{62.61\%\\ $/ \textbf{296.96\%}$}&\tabincell{c}{63.09\%\\ $/ \textbf{321.84\%}$ }&\tabincell{c}{65.84\%\\ $/ \textbf{340.64\%}$}   \\ \hline
+12  &\tabincell{c}{37.79\%\\ $/ \textbf{125.99\%}$}&\tabincell{c}{49.28\%\\  $/ \textbf{180.82\%}$}&\tabincell{c}{57.09\%\\  $/ \textbf{212.81\%}$}&\tabincell{c}{61.53\%\\ $/ \textbf{244.38\%}$}&\tabincell{c}{62.21\%\\ $/ \textbf{257.46\%}$ }&\tabincell{c}{62.94 \%\\ $/ \textbf{275.81\%}$}    \\ \hline
+14  &\tabincell{c}{36.88\%\\ $/ \textbf{101.67\%}$}&\tabincell{c}{49.72\%\\  $/ \textbf{155.08\%}$}&\tabincell{c}{56.41\%\\  $/ \textbf{181.96\%}$}&\tabincell{c}{61.52\%\\ $/ \textbf{205.63\%}$}&\tabincell{c}{63.29\%\\ $/ \textbf{221.60\%}$ }&\tabincell{c}{65.91\%\\ $/ \textbf{231.13\%}$ }  \\ \hline
+16  &\tabincell{c}{34.91\%\\ $/ \textbf{81.09\%}$}&\tabincell{c}{46.12\%\\  $/ \textbf{125.62\%}$}&\tabincell{c}{54.14\%\\  $/ \textbf{154.72\%}$}&\tabincell{c}{58.16\%\\ $/ \textbf{178.30\%}$}&\tabincell{c}{ 59.01\%\\ $/ \textbf{183.32\%}$ }&\tabincell{c}{61.53 \%\\ $/ \textbf{200.83\%}$ }  \\ \hline
+18  &\tabincell{c}{35.01\%\\ $/ \textbf{71.06\%}$}&\tabincell{c}{ 45.32\%\\ $/ \textbf{111.65\%}$}&\tabincell{c}{ 55.19\%\\ $/ \textbf{135.40\%}$}&\tabincell{c}{58.26\%\\ $/ \textbf{149.71\%}$}&\tabincell{c}{ 58.91\%\\ $/ \textbf{162.67\%}$}&\tabincell{c}{ 61.91\%\\ $/ \textbf{171.73\%}$ }    \\ \hline
+20  &\tabincell{c}{30.41\%\\ $/ \textbf{60.15\%}$}&\tabincell{c}{43.47\%\\  $/ \textbf{88.04\%}$}&\tabincell{c}{50.08 \%\\ $/ \textbf{111.18\%}$}&\tabincell{c}{53.83\%\\ $/ \textbf{126.48\%}$}&\tabincell{c}{57.47\%\\ $/ \textbf{142.90\%}$ }&\tabincell{c}{57.97\%\\ $/ \textbf{148.27\%}$ }   \\ \hline
+22  &\tabincell{c}{26.85\%\\ $/ \textbf{50.95\%}$}&\tabincell{c}{38.52\% \\ $/ \textbf{77.01\%}$}&\tabincell{c}{46.14\%\\  $/ \textbf{103.56\%}$}&\tabincell{c}{53.39\%\\ $/ \textbf{115.94\%}$}&\tabincell{c}{52.72\%\\ $/ \textbf{123.91\%}$} & \tabincell{c}{ 55.32 \%\\ $/ \textbf{134.02\%}$ }  \\ \hline
+24  &\tabincell{c}{24.60\%\\ $/ \textbf{44.12\%}$}&\tabincell{c}{35.93\%\\  $/ \textbf{68.42\%}$}&\tabincell{c}{42.37\%\\  $/ \textbf{86.38\%}$}&\tabincell{c}{47.48\%\\ $/ \textbf{100.65\%}$}&\tabincell{c}{ 49.20\%\\ $/ \textbf{110.39\%}$ }&\tabincell{c}{ 55.57\%\\  $/ \textbf{116.31\%}$ } \\ \hline
+\end{longtable}
+\end{center}
+
+\begin{center}
+\begin{longtable}{|c|c|c|c|c|c|c|}
+\caption{并行效率(规则数量为80)}\label{table:labe13}
+\\ \hline
+\diagbox{$\rm Threads\;number$}{$\rm Parallel\;efficiency$}{$\rm Data\;Scale$}   & 500  & 1000  & 1500 & 2000 & 2500   &  3000     \\ \hline
+2   &\tabincell{c}{ 78.25\%\\ $/ \textbf{1135.19\%}$}&\tabincell{c}{ 83.97\%\\  $/ \textbf{1496.50\%}$}&\tabincell{c}{89.17\%\\ $/ \textbf{1408.54\%}$} &\tabincell{c}{90.94\%\\ $/ \textbf{1552.56 \%}$}&\tabincell{c}{90.73\%\\ $/ \textbf{1540.95\%}$ }&\tabincell{c}{91.19 \%\\  $/ \textbf{1568.51\%}$}   \\ \hline
+4   &\tabincell{c}{ 65.07\%\\ $/ \textbf{498.77\%}$}&\tabincell{c}{72.69\%\\   $/ \textbf{707.40\%}$}&\tabincell{c}{79.48\%\\ $/ \textbf{775.66\%}$} &\tabincell{c}{83.26\%\\ $/ \textbf{820.85\%}$}&\tabincell{c}{84.62\%\\ $/ \textbf{884.22\%}$} &\tabincell{c}{ 84.43\%\\ $/ \textbf{908.62\%}$ }   \\ \hline
+6   &\tabincell{c}{ 54.87\% \\ $/ \textbf{323.15\%}$}&\tabincell{c}{62.72 \%\\  $/ \textbf{447.20\%}$}&\tabincell{c}{66.37\%\\ $/ \textbf{521.81\%}$} &\tabincell{c}{71.37\%\\ $/ \textbf{563.45\%}$}&\tabincell{c}{73.91\%\\ $/ \textbf{587.10\%}$} &\tabincell{c}{73.71\%\\   $/ \textbf{633.75\%}$ }  \\ \hline
+8   &\tabincell{c}{46.27\%\\  $/ \textbf{231.07\%}$}&\tabincell{c}{58.02\%\\   $/ \textbf{300.88\%}$}&\tabincell{c}{62.62\%\\ $/ \textbf{373.92\%}$ }&\tabincell{c}{65.29\%\\ $/ \textbf{403.72\%}$}&\tabincell{c}{67.83\%\\ $/ \textbf{440.38\%}$ }&\tabincell{c}{68.13\%\\   $/ \textbf{442.58\%}$ }   \\ \hline
+10  &\tabincell{c}{42.43\%\\  $/ \textbf{176.56\%}$}&\tabincell{c}{54.90\% \\  $/ \textbf{235.78\%}$}&\tabincell{c}{60.31\%\\ $/ \textbf{275.33\%}$ }&\tabincell{c}{65.14\%\\ $/ \textbf{302.01\%}$}&\tabincell{c}{66.55 \%\\ $/ \textbf{320.93\%}$ }&\tabincell{c}{ 67.10 \%\\ $/ \textbf{345.56\%}$  } \\ \hline
+12  &\tabincell{c}{40.31 \%\\ $/ \textbf{139.39\%}$}&\tabincell{c}{51.59\% \\  $/ \textbf{204.80\%}$}&\tabincell{c}{58.45\%\\ $/ \textbf{234.15\%}$ }&\tabincell{c}{63.01 \%\\ $/ \textbf{246.64\%}$}&\tabincell{c}{63.85\%\\ $/ \textbf{266.49\%}$ }&\tabincell{c}{67.18  \%\\ $/ \textbf{280.37\%}$  } \\ \hline
+14  &\tabincell{c}{38.07 \%\\ $/ \textbf{116.56\%}$}&\tabincell{c}{51.98 \%\\  $/ \textbf{170.58\%}$}&\tabincell{c}{58.80\%\\ $/ \textbf{198.08\%}$ }&\tabincell{c}{61.54 \%\\ $/ \textbf{214.38\%}$}&\tabincell{c}{63.02\%\\ $/ \textbf{223.99\%}$ }&\tabincell{c}{64.35\%\\  $/ \textbf{239.27\%}$}    \\ \hline
+16  &\tabincell{c}{36.94\%\\  $/ \textbf{94.76\%}$}&\tabincell{c}{51.22\%\\   $/ \textbf{145.27\%}$}&\tabincell{c}{58.46\%\\ $/ \textbf{168.45\%}$ }&\tabincell{c}{63.21\%\\ $/ \textbf{187.39\%}$}&\tabincell{c}{64.66 \%\\ $/ \textbf{201.67\%}$ }&\tabincell{c}{66.25  \%\\ $/ \textbf{207.88\%}$  } \\ \hline
+18  &\tabincell{c}{36.02\%\\  $/ \textbf{80.45\%}$}&\tabincell{c}{50.57\% \\  $/ \textbf{120.92\%}$}&\tabincell{c}{57.37\%\\ $/ \textbf{145.26\%}$ }&\tabincell{c}{59.55\%\\ $/ \textbf{159.18\%}$}&\tabincell{c}{ 62.11\%\\ $/ \textbf{169.35\%}$} &\tabincell{c}{ 64.02\%\\   $/ \textbf{185.91\%}$ }  \\ \hline
+20  &\tabincell{c}{33.97\%\\  $/ \textbf{71.03\%}$}&\tabincell{c}{46.86\%\\   $/ \textbf{100.91\%}$}&\tabincell{c}{52.24\%\\ $/ \textbf{121.63\%}$ }&\tabincell{c}{57.78\%\\ $/ \textbf{135.64\%}$}&\tabincell{c}{59.58\%\\ $/ \textbf{149.82\%}$ }& \tabincell{c}{61.71 \%\\  $/ \textbf{161.11\%}$  } \\ \hline
+22  &\tabincell{c}{31.08\%\\  $/ \textbf{63.70\%}$}&\tabincell{c}{43.07 \%\\  $/ \textbf{92.22\%}$}&\tabincell{c}{48.30\%\\ $/ \textbf{107.12\%}$ }&\tabincell{c}{55.11\%\\ $/ \textbf{128.91\%}$}&\tabincell{c}{ 56.30\%\\ $/ \textbf{134.29\%}$}&\tabincell{c}{ 56.98\% \\ $/ \textbf{143.96\%}$  }  \\ \hline
+24  &\tabincell{c}{26.84\%\\  $/ \textbf{52.96\%}$}&\tabincell{c}{38.47\%\\   $/ \textbf{79.34\%}$}&\tabincell{c}{45.33\%\\ $/ \textbf{94.69\%}$ }&\tabincell{c}{49.09\%\\ $/ \textbf{112.04\%}$}&\tabincell{c}{ 51.18\%\\ $/ \textbf{121.08\%}$ }&\tabincell{c}{53.34\%\\  $/ \textbf{130.94\%}$ }     \\ \hline
+\end{longtable}
+\end{center}
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

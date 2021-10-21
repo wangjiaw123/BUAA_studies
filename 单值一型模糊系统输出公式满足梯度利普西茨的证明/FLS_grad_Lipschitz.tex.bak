@@ -1,0 +1,131 @@
+\documentclass[11pt,CJK]{cctart}
+\usepackage{caption}%调用标题宏包来修改标题的格式，居中对齐ll
+\usepackage[paperwidth=8.8in,paperheight=11in,left=1in, right=1in, top=1in, bottom=1in]{geometry}% 版面设计
+\usepackage{cite}
+\usepackage{latexsym}
+\usepackage[dvips]{graphicx}
+\usepackage[cmex10,tbtags]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm,multicol,amscd}
+\usepackage{amsfonts}
+\usepackage{mathbbold}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{引理}
+%\newtheorem{proof}{证明}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+%\newtheorem{proof}{Proof}[section]
+
+%\documentclass{article}
+\renewcommand {\baselinestretch} {1.2}
+\renewcommand {\arraystretch} {1.2}
+%\pagestyle{empty}
+\begin{document}
+
+\title{\textbf{单值一型模糊系统输出公式满足梯度利普西茨条件的证明}}
+\author{\large\bf }
+%\date{}
+\date{2020.7.18}
+\maketitle
+%\section{Frank-Wolfe算法简介}
+选择模糊规则中隶属函数均为高斯型隶属函数的单值一型模糊逻辑系统，此时模糊系统的输出公式为：
+\begin{equation}
+f=\frac{\sum \limits_{i=1}^{M} y_i \prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})}{\sum \limits_{i=1}^{M} \prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})}=\frac{b}{a}
+\end{equation}
+其中$M$表示模糊规则的数目，$n$表示规则前件的个数，$y_i$表示第$i$条规则输出的后件，$\mu_{ij}$与$\sigma_{ij}$表示第$i$条规则中第$j$个前件中隶属函数的参数，$\emph{\textbf{x}}=(x_1,x_2,\cdots,x_n)$表示模糊系统的一个输入。
+计算$f$对与$y_i$的一阶导数为：
+\begin{equation}
+f'_{y_i}=\frac{\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})}{a}
+\end{equation}
+则$f$对与$y_i$的二阶导数为：
+\begin{equation}
+f''_{y_i}=0
+\end{equation}
+所以$f$对与$y_i$的二阶导数有界。计算$f$对与$\mu_{ij}$的一阶导数为：
+\begin{align}
+f'_{\mu_{ij}}&=\frac{y_i \prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 }a-b\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 }}{a^2} \\
+&=(y_i-\frac{b}{a})\frac{\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 }}{a}\\
+&=P_1 P_2
+\end{align}
+记$P_1=(y_i-\frac{b}{a})$,$P_2=\frac{\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 }}{a}$.
+计算$f$对与$\mu_{ij}$的二阶导数为：
+\begin{equation}
+f''_{\mu_{ij}}=(P_1 P_2)'=P'_1 P_2+P_1 P'_2
+\end{equation}
+其中：
+\begin{equation}
+P'_1=-f'_{\mu_{ij}}
+\end{equation}
+\begin{equation}
+P'_2=\frac{\Big[\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})(\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 })^2 + \prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{-1}{2\sigma_{ij}^2 }\Big]a-\Big[\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{x_j-\mu_{ij}}{2\sigma_{ij}^2 }\Big]^2}{a^2}
+\end{equation}
+计算$f$对与$\sigma_{ij}$的一阶导数为：
+\begin{align}
+f'_{\sigma_{ij}}&=\frac{y_i \prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^2}{\sigma_{ij}^3 }a-b\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^2}{\sigma_{ij}^3 }}{a^2}\\
+&=(y_i-\frac{b}{a})\frac{\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^2}{\sigma_{ij}^3 }}{a}\\
+&=P_3 P_4
+\end{align}
+记$P_1=(y_i-\frac{b}{a})$,$P_2=\frac{\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^2}{\sigma_{ij}^3 }}{a}$. 计算$f$对与$\sigma_{ij}$的二阶导数为：
+\begin{equation}
+f''_{\sigma_{ij}}=(P_3 P_4)'=P'_3 P_4+P_3 P'_4
+\end{equation}
+其中：
+\begin{equation}
+P'_3=-f'_{\sigma_{ij}}
+\end{equation}
+\begin{equation}
+P'_4=\frac{\Big[\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^4}{\sigma_{ij}^6}+\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{-3(x_j-\mu_{ij})^2}{\sigma_{ij}^4  }\Big]a-\Big[\prod \limits_{j=1}^n{\rm  exp}(-\frac{(\emph{x}_j-\mu_{ij})^2}{2 \sigma_{ij}^2})\frac{(x_j-\mu_{ij})^2}{\sigma_{ij}^3 }\Big]^2}{a^2}
+\end{equation}
+由模糊系统有规则得到的点火强度位于0~1之间，故分母$a>0$,只要模糊规则中的前件参数$\sigma_{ij}$均为不趋于0的正数，故可以使得$\frac{1}{\sigma_{ij}}$均有界，不难看出$f$对与$\sigma_{ij}$的二阶导数以及$f$对与$\mu_{ij}$的二阶导数公式中的各项均有界，所以$f$对与$\sigma_{ij}$的二阶导数以及$f$对与$\mu_{ij}$的二阶导数有界。亦即：
+$f''=(f''_{y_1},\cdots,f''_{y_n},f''_{\mu_{11}},\cdots,f''_{\mu_{Mn}},f''_{\sigma_{11}},\cdots,f''_{\sigma_{Mn}})$ 有界。
+
+为了证明单值一型模糊系统输出公式满足梯度利普西茨条件，首先引入几个性质。设$Q$是$R^n$的子集，用$C_{L}^{k,p}(Q)$表示具有后面两个性质的函数类:(1)若$f \in C_{L}^{k,p}(Q)$,则$f$在$Q$上是$k$阶连续可微的;(2)$f$\\
+的$p$阶导数在$Q$上是利普西茨连续的，利普西茨常数为$L$,即满足$||f^{(p)}(x)-f^{(p)}(x)||\leq ||x-y||,(\forall x,y\in Q)$.
+
+对于我们来说，最常用的函数类是$C_{L}^{1,1}(R^n)$,这类函数的梯度是利普西茨连续。由前面的定义，若$f \in C_{L}^{1,1}(R^n)$,则有:
+\begin{equation}
+||f^{(1)}(x)-f^{(1)}(x)||\leq L||x-y||,(\forall x,y\in R^n)
+\end{equation}
+下面介绍一个有助于证明的重要引理。
+\begin{lemma} \label{lemma1}
+设$f \in C_{L}^{2,1}(R^n)$,$C_{L}^{2,1}(R^n) \subset C_{L}^{1,1}(R^n)$当且仅当:
+\begin{equation}
+||f''(x)||\leq L,\forall x \in R^n
+\end{equation}
+\end{lemma}
+
+\begin{proof}[证明]
+事实上，对于$\forall x,y \in R^n$,有：
+\begin{align}
+f'(y)&=f'(x)+\int \limits_{0}^{1}f''(x+\tau(y-x))(y-x)d\tau \\
+&=f'(x)+\Big(\int \limits_{0}^{1}f''(x+\tau(y-x))d\tau\Big)(y-x)
+\end{align}
+因此，若条件$||f''(x)||\leq L,\forall x \in R^n$满足，则有：
+\begin{align}
+||f'(y)-f'(x)||&= \Big|\Big|\Big(\int \limits_{0}^{1}f''(x+\tau(y-x))d\tau\Big)(y-x)\Big|\Big| \\
+&\leq \Big|\Big|\int \limits_{0}^{1}f''(x+\tau(y-x))d\tau \Big|\Big|\cdot ||y-x|| \\
+&=\int \limits_{0}^{1}||f''(x+\tau(y-x))||d\tau \cdot ||y-x|| \\
+&=L ||y-x||.
+\end{align}
+反之，若$f \in C_{L}^{2,1}(R^n)$,则对于任意$s \in R^n$且$\alpha > 0$,我们有：
+\begin{equation}
+\Big|\Big|\Big(\int \limits_{0}^{\alpha} f''(x+\tau s)d \tau \Big)\cdot s\Big|\Big|=||f'(x+\alpha s)-f'(x)|| \leq \alpha L ||s||
+\end{equation}
+在上式两边同时除以$\alpha$,再令$\alpha \to 0$ ,可以得到:$||f''(x)||\leq L,\forall x \in R^n$.
+\end{proof}
+
+由上述引理以及本文中所选择的单值一型模糊逻辑系统输出公式的二阶导数有界，故证明了单值一型模糊系统输出公式是满足梯度利普西茨条件的。
+
+
+
+
+\end{document}
